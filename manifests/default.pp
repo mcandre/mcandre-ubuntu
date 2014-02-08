@@ -17,17 +17,27 @@ exec { "apt-update":
 
 Exec["apt-update"] -> Package <| |>
 
-# # Add PPAs
+# Add PPAs
 
-# apt::ppa { "ppa:hrzhu/smlnj-backport":
-#   before => Package["smlnj"],
-#   require => [File["/etc/apt/sources.list.d"], Exec["apt-update"]]
-# }
+apt::ppa { "ppa:cassou/emacs":
+  before => Package["emacs24"]
+}
 
-# .bash_profile
-# .clisprc.lisp
+package { "emacs24":
+  ensure => latest
+}
 
 # Tons of programming languages
+
+# apt::ppa { "ppa:hrzhu/smlnj-backport":
+#   before => Package["smlnj"]
+# }
+
+# package { "smlnj":
+#   ensure => latest
+# }
+
+# .clisprc.lisp
 
 # package { [
 
@@ -52,7 +62,6 @@ Exec["apt-update"] -> Package <| |>
   # "ocaml",
   # "r-base",
   # "gnu-smalltalk",
-  # "smlnj",
   # "yasm",
   # "zsh"
   # ]:
@@ -63,6 +72,10 @@ Exec["apt-update"] -> Package <| |>
 # Leiningen/Clojure
 
 # Dev tools
+
+package { "tree":
+  ensure => latest
+}
 
 package { "splint":
   ensure => latest
@@ -100,6 +113,8 @@ package { "splint":
 # CPAN, PPM
 # yaml, Test, www::mechanize
 
+# ack
+
 # chicken-install cluckcheck
 
 # vagrant, virtualbox
@@ -129,12 +144,13 @@ file { "/home/vagrant/.vim/":
 
 exec { "git vundle":
   command => "/usr/bin/sudo -u vagrant git clone https://github.com/gmarik/vundle.git /home/vagrant/.vim/bundle/vundle",
+  refreshonly => true,
   require => [
     Package["git"],
     Package["vim"],
-    File["/home/vagrant/.vimrc"],
     File["/home/vagrant/.vim/"]
-  ]
+  ],
+  onlyif => "/usr/bin/test -d /home/vagrant/.vim/bundle/vundle"
 }
 
 # Install Vim packages
@@ -142,7 +158,9 @@ exec { "git vundle":
 exec { "vundle":
   command => "/usr/bin/sudo -u vagrant /usr/bin/vim +BundleInstall +qall",
   environment => "HOME=/home/vagrant/",
-  require => Exec["git vundle"]
+  refreshonly => true,
+  require => Exec["git vundle"],
+  subscribe => File["/home/vagrant/.vimrc"]
 }
 
 # .emacs
