@@ -9,7 +9,7 @@ Includes lots of programming languages, and text editors configured just so.
 
 # EXAMPLE
 
-    $ git clone https://github.com/mcandre/mcandre-ubuntu
+    $ git clone https://github.com/mcandre/mcandre-ubuntu.git
     $ cd mcandre-ubuntu
 
     mcandre-ubuntu$ vagrant up
