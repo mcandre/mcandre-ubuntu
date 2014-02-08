@@ -199,14 +199,14 @@ file { "/home/vagrant/.emacs":
 # Install Emacs packages
 
 exec { "cask":
-  command => "/usr/bin/sudo -u vagrant /usr/bin/emacs -q --eval \"(progn (require 'cask \\\"~/.cask/cask.el\\\") (cask-initialize) (setq save-abbrevs nil) (cask-install) (kill-emacs))\"",
+  command => "/usr/bin/sudo -u vagrant /usr/bin/emacs -q --batch --eval \"(progn (require 'cask \\\"~/.cask/cask.el\\\") (cask-initialize) (setq save-abbrevs nil) (cask-install) (kill-emacs))\"",
   environment => "HOME=/home/vagrant/",
   refreshonly => true,
   require => [
     Package["emacs24"],
     Exec["git cask"]
   ],
-  subscribe => File["/home/vagrant/.emacs.d/Cask"]
+  subscribe => File["/home/vagrant/.emacs.d/Cask"],
 }
 
 # .nano...
