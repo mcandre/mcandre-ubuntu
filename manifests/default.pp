@@ -77,9 +77,9 @@ package { "tree":
   ensure => latest
 }
 
-package { "splint":
-  ensure => latest
-}
+# package { "splint":
+#   ensure => latest
+# }
 
 # Apache
 
@@ -97,6 +97,7 @@ package { "splint":
 # coffeelint
 # stylus
 # less
+# sass
 # mocha
 
 # Ruby 2 / RubyGems ?
@@ -123,6 +124,10 @@ package { "git":
   ensure => latest
 }
 
+# package { "curl":
+#   ensure => latest
+# }
+
 package { "vim":
   ensure => latest
 }
@@ -131,26 +136,22 @@ package { "vim":
 
 file { "/home/vagrant/.vimrc":
   ensure => link,
-  target => "/vagrant/.vimrc",
-  require => Package["vim"]
+  target => "/vagrant/.vimrc"
 }
 
 file { "/home/vagrant/.vim/":
   ensure => directory,
   owner => "vagrant",
   group => "vagrant",
-  require => Package["vim"]
 }
 
 exec { "git vundle":
   command => "/usr/bin/sudo -u vagrant git clone https://github.com/gmarik/vundle.git /home/vagrant/.vim/bundle/vundle",
-  refreshonly => true,
   require => [
     Package["git"],
-    Package["vim"],
     File["/home/vagrant/.vim/"]
   ],
-  onlyif => "/usr/bin/test -d /home/vagrant/.vim/bundle/vundle"
+  onlyif => "/usr/bin/test ! -d /home/vagrant/.vim/bundle/vundle/"
 }
 
 # Install Vim packages
@@ -159,9 +160,53 @@ exec { "vundle":
   command => "/usr/bin/sudo -u vagrant /usr/bin/vim +BundleInstall +qall",
   environment => "HOME=/home/vagrant/",
   refreshonly => true,
-  require => Exec["git vundle"],
+  require => [
+    Package["vim"],
+    Exec["git vundle"]
+  ],
   subscribe => File["/home/vagrant/.vimrc"]
 }
 
-# .emacs
+# Fix Emacs permissions
+
+file { "/home/vagrant/.emacs.d/":
+  ensure => directory,
+  owner => "vagrant",
+  group => "vagrant"
+}
+
+exec { "git cask":
+  command => "/usr/bin/sudo -u vagrant git clone https://github.com/cask/cask.git /home/vagrant/.cask",
+  require => Package["git"],
+  onlyif => "/usr/bin/test ! -d /home/vagrant/.cask/"
+}
+
+# Link Cask profile
+
+file { "/home/vagrant/.emacs.d/Cask":
+  ensure => link,
+  target => "/vagrant/Cask",
+  require => File["/home/vagrant/.emacs.d/"]
+}
+
+# Link emacs profile
+
+file { "/home/vagrant/.emacs":
+  ensure => link,
+  target => "/vagrant/.emacs"
+}
+
+# Install Emacs packages
+
+exec { "cask":
+  command => "/usr/bin/sudo -u vagrant /usr/bin/emacs -q --eval \"(progn (require 'cask \\\"~/.cask/cask.el\\\") (cask-initialize) (setq save-abbrevs nil) (cask-install) (kill-emacs))\"",
+  environment => "HOME=/home/vagrant/",
+  refreshonly => true,
+  require => [
+    Package["emacs24"],
+    Exec["git cask"]
+  ],
+  subscribe => File["/home/vagrant/.emacs.d/Cask"]
+}
+
 # .nano...
