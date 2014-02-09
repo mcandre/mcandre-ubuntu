@@ -315,6 +315,10 @@ file { '/home/vagrant/.ackrc':
 # Checkstyle
 
 # Apache
+# PHP
+# MySQL
+# Redis
+# SQLite
 
 # LaTeX
 
