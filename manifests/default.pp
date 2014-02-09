@@ -17,9 +17,7 @@ exec { "apt-update":
 
 Exec["apt-update"] -> Package <| |>
 
-apt::ppa { "ppa:cassou/emacs":
-  before => Package["emacs24"]
-}
+apt::ppa { "ppa:cassou/emacs": }
 
 package { "emacs24":
   ensure => latest
@@ -71,10 +69,6 @@ package { "emacs24":
 # flog
 # churn
 # shlint
-
-# CPAN, PPM
-# yaml, Test, www::mechanize
-# App::Ack
 
 package { "git":
   ensure => latest
@@ -181,9 +175,7 @@ package { "curl":
   ensure => latest
 }
 
-apt::ppa { "ppa:hrzhu/smlnj-backport":
-  before => Package["smlnj"]
-}
+apt::ppa { "ppa:hrzhu/smlnj-backport": }
 
 package { "smlnj":
   ensure => latest
@@ -236,18 +228,18 @@ package { "haskell-platform":
   ensure => latest
 }
 
-exec { "cabal update":
-  command => "/usr/bin/sudo -u vagrant cabal update",
-  environment => "HOME=/home/vagrant/",
-}
+# exec { "cabal update":
+#   command => "/usr/bin/sudo -u vagrant cabal update",
+#   environment => "HOME=/home/vagrant/",
+# }
 
-exec { "cabal hlint":
-  command => "/usr/bin/sudo -u vagrant /usr/bin/cabal -v3 install hlint 2>&1",
-  environment => "HOME=/home/vagrant/",
-  require => Exec["cabal update"],
-  onlyif => "test ! -d /home/vagrant/.cabal/packages/hackage.haskell.org/hlint/"
-  logoutput => true,
-}
+# exec { "cabal hlint":
+#   command => "/usr/bin/sudo -u vagrant /usr/bin/cabal -v3 install hlint 2>&1",
+#   environment => "HOME=/home/vagrant/",
+#   require => Exec["cabal update"],
+#   onlyif => "test ! -d /home/vagrant/.cabal/packages/hackage.haskell.org/hlint/"
+#   logoutput => true,
+# }
 
 # shellcheck...
 
@@ -307,4 +299,17 @@ package { "python-pip":
 
 package { ["vagrant", "virtualbox"]:
   ensure => latest
+}
+
+class { "perl": }
+
+perl::cpan::module { "WWW::Mechanize": }
+
+perl::cpan::module { "App::Ack": }
+
+# Link to ack profile
+
+file { "/home/vagrant/.ackrc":
+  ensure => link,
+  target => "/vagrant/.ackrc"
 }
