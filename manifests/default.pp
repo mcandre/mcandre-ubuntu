@@ -25,47 +25,40 @@ package { "emacs24":
   ensure => latest
 }
 
+# Bash 4.0
+
+# "clisp"
+# Quicklisp
 # .clisprc.lisp
 
-# package { [
-
-  # # Bash 4.0
-
-  # "clisp",
-  # Quicklisp
-
-  # # Java
-
-  # ]:
-#   ensure => latest
-# }
-
+# Java
 # Scala
 # Leiningen/Clojure
+# Maven
+# Checkstyle
 
 # Apache
 
 # LaTeX
 
-# Maven
-
 # NVM / Node ?
-
 # coffee
 # coffeelint
 # stylus
 # less
+# csslint
+# tidy
 # sass
 # mocha
 
 # Ruby 2 / RubyGems ?
-
 # Cucumber
 # Guard
 # rspec
 # nokogiri
 # specs
 # rubycheck
+# puppet-lint
 
 # CPAN, PPM
 # yaml, Test, www::mechanize
@@ -190,6 +183,18 @@ package { "build-essential":
   ensure => latest
 }
 
+package { "strace":
+  ensure => latest
+}
+
+package { "splint":
+  ensure => latest
+}
+
+package { "cppcheck":
+  ensure => latest
+}
+
 package { "clang":
   ensure => latest
 }
@@ -217,6 +222,19 @@ package { "golang":
 
 package { "haskell-platform":
   ensure => latest
+}
+
+exec { "cabal update":
+  command => "/usr/bin/sudo -u vagrant cabal update",
+  environment => "HOME=/home/vagrant/",
+}
+
+exec { "cabal hlint":
+  command => "/usr/bin/sudo -u vagrant /usr/bin/cabal -v3 install hlint 2>&1",
+  environment => "HOME=/home/vagrant/",
+  require => Exec["cabal update"],
+  onlyif => "test ! -d /home/vagrant/.cabal/packages/hackage.haskell.org/hlint/"
+  logoutput => true,
 }
 
 # llvm-as, etc.
@@ -259,15 +277,17 @@ package { "tree":
   ensure => latest
 }
 
-package { "splint":
-  ensure => latest
-}
-
 # pip for Python 2
 
 package { "python-pip":
   ensure => latest
 }
+
+# Invoke
+# PyLint
+# PyFlakes
+# pep8
+# PyChecker
 
 package { ["vagrant", "virtualbox"]:
   ensure => latest

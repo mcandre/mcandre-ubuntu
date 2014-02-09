@@ -10,5 +10,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
                     puppet module install -f puppetlabs/apt"
   end
 
-  config.vm.provision :puppet
+  config.vm.provision :puppet do |puppet|
+    puppet.options = "--verbose --debug"
+  end
 end
