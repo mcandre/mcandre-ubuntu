@@ -32,7 +32,6 @@ package { "emacs24":
   # # Bash 4.0
 
   # "clisp",
-  # "haskell-platform",
 
 
   # # Java
@@ -235,5 +234,9 @@ package { "erlang":
 }
 
 package { "golang":
+  ensure => latest
+}
+
+package { "haskell-platform":
   ensure => latest
 }
