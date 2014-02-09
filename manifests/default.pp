@@ -219,8 +219,6 @@ exec { 'cabal shellcheck':
   onlyif    => '/usr/bin/test ! -d /root/.cabal/packages/hackage.haskell.org/ShellCheck'
 }
 
-# xmllint from libxml2...
-
 # llvm-as, etc.
 
 package { 'llvm':
@@ -379,5 +377,11 @@ package { 'curl':
 }
 
 package { 'git':
+  ensure => latest
+}
+
+# xmllint
+
+package { 'libxml2-utils':
   ensure => latest
 }
