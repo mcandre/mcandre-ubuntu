@@ -49,6 +49,7 @@ package { "emacs24":
 # csslint
 # tidy
 # sass
+# sasslint
 # mocha
 
 # Ruby 2 / RubyGems ?
@@ -59,6 +60,17 @@ package { "emacs24":
 # specs
 # rubycheck
 # puppet-lint
+# reek
+# flay
+# roodi
+# cane
+# excellent
+# rubycop
+# heckle
+# saikuro
+# flog
+# churn
+# shlint
 
 # CPAN, PPM
 # yaml, Test, www::mechanize
@@ -236,6 +248,10 @@ exec { "cabal hlint":
   onlyif => "test ! -d /home/vagrant/.cabal/packages/hackage.haskell.org/hlint/"
   logoutput => true,
 }
+
+# shellcheck...
+
+# xmllint from libxml2...
 
 # llvm-as, etc.
 
