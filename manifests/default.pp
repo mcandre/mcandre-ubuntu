@@ -69,12 +69,7 @@ package { "emacs24":
 
 # CPAN, PPM
 # yaml, Test, www::mechanize
-
-# ack
-
-# chicken-install cluckcheck
-
-# vagrant, virtualbox
+# App::Ack
 
 package { "git":
   ensure => latest
@@ -205,6 +200,13 @@ package { "chicken-bin":
   ensure => latest
 }
 
+exec { "chicken cluckcheck":
+  command => "/usr/bin/chicken-install cluckcheck",
+  environment => "HOME=/home/vagrant/",
+  require => Package["chicken-bin"],
+  onlyif => "/usr/bin/test ! -f /var/lib/chicken/6/cluckcheck.o"
+}
+
 package { "erlang":
   ensure => latest
 }
@@ -264,5 +266,9 @@ package { "splint":
 # pip for Python 2
 
 package { "python-pip":
+  ensure => latest
+}
+
+package { ["vagrant", "virtualbox"]:
   ensure => latest
 }
