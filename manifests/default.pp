@@ -37,7 +37,6 @@ package { "emacs24":
   # # Java
 
 
-  # "lua5.1",
   # "ocaml",
   # "r-base",
   # "gnu-smalltalk",
@@ -243,5 +242,9 @@ package { "haskell-platform":
 # llvm-as, etc.
 
 package { "llvm":
+  ensure => latest
+}
+
+package { "lua5.1":
   ensure => latest
 }
