@@ -10,7 +10,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     puppetlabs/vcsrepo \
     example42/puppi \
     example42/perl \
-    example42/mongodb"
+    example42/mongodb \
+    stankevich/python"
 
   config.vm.provision :puppet
 end

@@ -261,17 +261,33 @@ package { 'tree':
   ensure => latest
 }
 
-# pip for Python 2
+# Python 2 and pip 2
 
-package { 'python-pip':
-  ensure => latest
+class { 'python':
+  version    => 'system',
+  virtualenv => true,
+  pip        => true
 }
 
-# Invoke
-# PyLint
-# PyFlakes
-# pep8
-# PyChecker
+python::pip { 'invoke':
+  ensure => latest,
+  owner => 'root'
+}
+
+python::pip { 'pylint':
+  ensure => latest,
+  owner => 'root'
+}
+
+python::pip { 'pyflakes':
+  ensure => latest,
+  owner => 'root'
+}
+
+python::pip { 'pep8':
+  ensure => latest,
+  owner => 'root'
+}
 
 package { ['vagrant', 'virtualbox']:
   ensure => latest
