@@ -32,8 +32,6 @@ package { "emacs24":
   # # Bash 4.0
 
   # "clisp",
-  # "erlang",
-  # "golang",
   # "haskell-platform",
 
 
@@ -229,5 +227,13 @@ package { "clang":
 # Chicken Scheme
 
 package { "chicken-bin":
+  ensure => latest
+}
+
+package { "erlang":
+  ensure => latest
+}
+
+package { "golang":
   ensure => latest
 }
