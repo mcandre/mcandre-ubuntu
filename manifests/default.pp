@@ -6,8 +6,9 @@ class { 'apt':
 
 exec { 'apt-update':
   command => 'apt-get update',
-  path    => '/usr/bin',
-  timeout => 0
+  path    => '/bin:/usr/bin',
+  timeout => 0,
+  refreshonly => true
 }
 
 Exec['apt-update'] -> Package <| |>
@@ -54,7 +55,7 @@ vcsrepo { '/home/vagrant/.vim/bundle/vundle':
 
 exec { 'vundle':
   command     => 'vim +BundleInstall +qall',
-  path        => '/usr/bin',
+  path        => '/bin:/usr/bin',
   user        => 'vagrant',
   environment => 'HOME=/home/vagrant/',
   refreshonly => true,
@@ -108,7 +109,7 @@ exec { 'cask':
     (cask-initialize) (setq save-abbrevs nil) \
     (cask-install) \
     (kill-emacs))\"',
-  path        => '/usr/bin',
+  path        => '/bin:/usr/bin',
   user        => 'vagrant',
   environment => 'HOME=/home/vagrant/',
   refreshonly => true,
@@ -179,7 +180,7 @@ package { 'chicken-bin':
 
 exec { 'chicken cluckcheck':
   command => 'chicken-install cluckcheck',
-  path    => '/usr/bin',
+  path    => '/bin:/usr/bin',
   require => Package['chicken-bin'],
   onlyif  => '/usr/bin/test ! -f /var/lib/chicken/6/cluckcheck.o'
 }
@@ -197,35 +198,34 @@ package { 'haskell-platform':
 }
 
 exec { 'cabal update':
-  command   => 'cabal update',
-  path      => '/usr/bin',
-  require   => Package['haskell-platform']
-}
-
-exec { 'cabal hlint':
-  command   => 'cabal -v3 install hlint',
-  path      => '/usr/bin',
-  timeout   => 0,
-  require   => Exec['cabal update'],
-  onlyif    => '/usr/bin/test ! -d /home/root/.cabal/packages/hackage.haskell.org/hlint',
-  logoutput => true,
+  command     => 'cabal update',
+  path        => '/bin:/usr/bin',
+  require     => Package['haskell-platform'],
+  refreshonly => true
 }
 
 # Fix cabal permissions
 
-file { '/home/root/.cabal/bin':
+file { '/root/.cabal/bin':
+  ensure => directory,
   mode => 644
 }
 
-# exec { 'cabal shellcheck':
-#   command   => 'cabal -v3 install shellcheck',
-#   user      => 'vagrant',
-#   path      => '/usr/sbin',
-# # environment => 'HOME=/home/vagrant/',
-#   require   => Exec['cabal update'],
-#   onlyif    => '/usr/bin/test ! -d /home/vagrant/.cabal/packages/hackage.haskell.org/shellcheck',
-#   logoutput => true,
-# }
+exec { 'cabal hlint':
+  command   => 'cabal install hlint',
+  path      => '/bin:/usr/bin',
+  timeout   => 0,
+  require   => Exec['cabal update'],
+  onlyif    => '/usr/bin/test ! -d /root/.cabal/packages/hackage.haskell.org/hlint',
+}
+
+exec { 'cabal shellcheck':
+  command   => 'cabal install shellcheck',
+  path      => '/bin:/usr/bin',
+  timeout   => 0,
+  require   => Exec['cabal update'],
+  onlyif    => '/usr/bin/test ! -d /root/.cabal/packages/hackage.haskell.org/ShellCheck'
+}
 
 # xmllint from libxml2...
 
@@ -291,7 +291,9 @@ class { 'perl': }
 
 perl::cpan::module { 'WWW::Mechanize': }
 
-perl::cpan::module { 'App::Ack': }
+perl::cpan::module { 'App::Ack':
+  require => Package["build-essential"]
+}
 
 # Link to ack profile
 

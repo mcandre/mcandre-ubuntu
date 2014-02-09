@@ -7,7 +7,5 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Install puppet modules
   config.vm.provision :shell, path: 'bootstrap.rb'
 
-  config.vm.provision :puppet do |puppet|
-    puppet.options = '--verbose --debug'
-  end
+  config.vm.provision :puppet
 end
