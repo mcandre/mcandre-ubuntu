@@ -17,8 +17,6 @@ exec { "apt-update":
 
 Exec["apt-update"] -> Package <| |>
 
-# Add PPAs
-
 apt::ppa { "ppa:cassou/emacs":
   before => Package["emacs24"]
 }
@@ -33,11 +31,6 @@ package { "emacs24":
 
   # # Bash 4.0
 
-  # "build-essential",
-
-  # "chicken-bin", "libchicken-dev", "libchicken6",
-
-  # "clang",
   # "clisp",
   # "erlang",
   # "golang",
@@ -220,5 +213,21 @@ apt::ppa { "ppa:hrzhu/smlnj-backport":
 }
 
 package { "smlnj":
+  ensure => latest
+}
+
+# gcc, g++, make, etc.
+
+package { "build-essential":
+  ensure => latest
+}
+
+package { "clang":
+  ensure => latest
+}
+
+# Chicken Scheme
+
+package { "chicken-bin":
   ensure => latest
 }
