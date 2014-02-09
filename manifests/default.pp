@@ -6,7 +6,8 @@ class { 'apt':
 
 exec { 'apt-update':
   command => 'apt-get update',
-  path    => '/usr/bin'
+  path    => '/usr/bin',
+  timeout => 0
 }
 
 Exec['apt-update'] -> Package <| |>
@@ -180,8 +181,7 @@ exec { 'chicken cluckcheck':
   command => 'chicken-install cluckcheck',
   path    => '/usr/bin',
   require => Package['chicken-bin'],
-  onlyif  => '/usr/bin/test ! -f /var/lib/chicken/6/cluckcheck.o',
-  logoutput => true
+  onlyif  => '/usr/bin/test ! -f /var/lib/chicken/6/cluckcheck.o'
 }
 
 package { 'erlang':
@@ -199,16 +199,22 @@ package { 'haskell-platform':
 exec { 'cabal update':
   command   => 'cabal update',
   path      => '/usr/bin',
-  require   => Package['haskell-platform'],
-  logoutput => true
+  require   => Package['haskell-platform']
 }
 
 exec { 'cabal hlint':
   command   => 'cabal -v3 install hlint',
   path      => '/usr/bin',
+  timeout   => 0,
   require   => Exec['cabal update'],
   onlyif    => '/usr/bin/test ! -d /home/root/.cabal/packages/hackage.haskell.org/hlint',
   logoutput => true,
+}
+
+# Fix cabal permissions
+
+file { '/home/root/.cabal/bin':
+  mode => 644
 }
 
 # exec { 'cabal shellcheck':
