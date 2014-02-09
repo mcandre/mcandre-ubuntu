@@ -1,31 +1,304 @@
-# Link bash profile
-
-file { "/home/vagrant/.bash_profile":
-  ensure => link,
-  target => "/vagrant/.bash_profile"
-}
-
 # Update apt before installing any packages
 
-class { "apt":
+class { 'apt':
   update_timeout => 60
 }
 
-exec { "apt-update":
-  command => "/usr/bin/apt-get update"
+exec { 'apt-update':
+  command => 'apt-get update',
+  path    => '/usr/bin'
 }
 
-Exec["apt-update"] -> Package <| |>
+Exec['apt-update'] -> Package <| |>
 
-apt::ppa { "ppa:cassou/emacs": }
+apt::ppa { 'ppa:cassou/emacs': }
 
-package { "emacs24":
+package { 'emacs24':
   ensure => latest
 }
 
-# Bash 4.0
+package { 'git':
+  ensure => latest
+}
 
-# "clisp"
+package { 'vim':
+  ensure => latest
+}
+
+# Link vim profile
+
+file { '~/.vimrc':
+  ensure => link,
+  target => '/vagrant/.vimrc',
+  owner  => 'vagrant',
+  group  => 'vagrant'
+}
+
+file { '~/.vim/':
+  ensure => directory,
+  owner  => 'vagrant',
+  group  => 'vagrant',
+}
+
+vcsrepo { '~/.vim/bundle/vundle':
+  ensure   => present,
+  provider => git,
+  source   => 'https://github.com/gmarik/vundle',
+  owner    => 'vagrant',
+  group    => 'vagrant'
+}
+
+# Install Vim packages
+
+exec { 'vundle':
+  command     => 'vim +BundleInstall +qall',
+  path        => '/usr/bin',
+  user        => 'vagrant',
+  environment => 'HOME=/home/vagrant/',
+  refreshonly => true,
+  require     => [
+    Package['vim'],
+    Vcsrepo['vundle']
+  ],
+  subscribe   => File['~/.vimrc']
+}
+
+# Fix Emacs permissions
+
+file { '~/.emacs.d/':
+  ensure => directory,
+  owner  => 'vagrant',
+  group  => 'vagrant'
+}
+
+vcsrepo { '/home/vagrant/.cask':
+  ensure   => present,
+  provider => git,
+  source   => 'https://github.com/cask/cask',
+  owner    => 'vagrant',
+  group    => 'vagrant'
+}
+
+# Link Cask profile
+
+file { '~/.emacs.d/Cask':
+  ensure  => link,
+  target  => '/vagrant/Cask',
+  owner   => 'vagrant',
+  group   => 'vagrant',
+  require => File['~/.emacs.d/']
+}
+
+# Link emacs profile
+
+file { '~/.emacs':
+  ensure => link,
+  target => '/vagrant/.emacs',
+  owner  => 'vagrant',
+  group  => 'vagrant',
+}
+
+# Install Emacs packages
+
+exec { 'cask':
+  command     => 'emacs -q --batch --eval \"(progn \
+    (require \'cask \\\"~/.cask/cask.el\\\") \
+    (cask-initialize) (setq save-abbrevs nil) \
+    (cask-install) \
+    (kill-emacs))\"',
+  path        => '/usr/bin',
+  user        => 'vagrant',
+  # environment => 'HOME=/home/vagrant/',
+  refreshonly => true,
+  require     => [
+    Package['emacs24'],
+    Vcsrepo['/home/vagrant/.cask']
+  ],
+  subscribe   => File['~/.emacs.d/Cask'],
+}
+
+# Link nano profile
+
+file { '~/.nanorc':
+  ensure => link,
+  target => '/vagrant/.nanorc',
+  owner  => 'vagrant',
+  group  => 'vagrant'
+}
+
+# Install Nano packages
+
+vcsrepo { '/home/vagrant/.nano':
+  ensure   => present,
+  provider => git,
+  source   => 'https://github.com/serialhex/nano-highlight',
+  owner    => 'vagrant',
+  group    => 'vagrant'
+}
+
+package { 'curl':
+  ensure => latest
+}
+
+apt::ppa { 'ppa:hrzhu/smlnj-backport': }
+
+package { 'smlnj':
+  ensure => latest
+}
+
+# gcc, g++, make, etc.
+
+package { 'build-essential':
+  ensure => latest
+}
+
+package { 'strace':
+  ensure => latest
+}
+
+package { 'splint':
+  ensure => latest
+}
+
+package { 'cppcheck':
+  ensure => latest
+}
+
+package { 'clang':
+  ensure => latest
+}
+
+# Chicken Scheme
+
+package { 'chicken-bin':
+  ensure => latest
+}
+
+exec { 'chicken cluckcheck':
+  command => 'chicken-install cluckcheck',
+  path    => '/usr/bin',
+  # environment => 'HOME=/home/vagrant/',
+  require => Package['chicken-bin'],
+  onlyif  => 'test ! -f /var/lib/chicken/6/cluckcheck.o'
+}
+
+package { 'erlang':
+  ensure => latest
+}
+
+package { 'golang':
+  ensure => latest
+}
+
+package { 'haskell-platform':
+  ensure => latest
+}
+
+exec { 'cabal update':
+  command   => 'cabal update',
+  user      => 'vagrant',
+  path      => '/usr/bin',
+  # environment => 'HOME=/home/vagrant/',
+  require   => Package['haskell-platform'],
+  logoutput => true
+}
+
+exec { 'cabal hlint':
+  command   => 'cabal -v3 install hlint',
+  user      => 'vagrant',
+  path      => '/usr/sbin',
+  # environment => 'HOME=/home/vagrant/',
+  require   => Exec['cabal update'],
+  onlyif    => 'test ! -d ~/.cabal/packages/hackage.haskell.org/hlint',
+  logoutput => true,
+}
+
+# exec { 'cabal shellcheck':
+#   command   => 'cabal -v3 install shellcheck',
+#   user      => 'vagrant',
+#   path      => '/usr/sbin',
+# # environment => 'HOME=/home/vagrant/',
+#   require   => Exec['cabal update'],
+#   onlyif    => 'test ! -d ~/.cabal/packages/hackage.haskell.org/shellcheck',
+#   logoutput => true,
+# }
+
+# xmllint from libxml2...
+
+# llvm-as, etc.
+
+package { 'llvm':
+  ensure => latest
+}
+
+package { 'lua5.1':
+  ensure => latest
+}
+
+package { 'ocaml':
+  ensure => latest
+}
+
+package { 'r-base':
+  ensure => latest
+}
+
+package { 'gnu-smalltalk':
+  ensure => latest
+}
+
+package { 'yasm':
+  ensure => latest
+}
+
+package { 'zsh':
+  ensure => latest
+}
+
+# Empty zsh profile
+
+file { '~/.zshrc':
+  ensure => present,
+  owner  => 'vagrant',
+  group  => 'vagrant'
+}
+
+package { 'tree':
+  ensure => latest
+}
+
+# pip for Python 2
+
+package { 'python-pip':
+  ensure => latest
+}
+
+# Invoke
+# PyLint
+# PyFlakes
+# pep8
+# PyChecker
+
+package { ['vagrant', 'virtualbox']:
+  ensure => latest
+}
+
+class { 'perl': }
+
+perl::cpan::module { 'WWW::Mechanize': }
+
+perl::cpan::module { 'App::Ack': }
+
+# Link to ack profile
+
+file { '~/.ackrc':
+  ensure => link,
+  target => '/vagrant/.ackrc',
+  owner  => 'vagrant',
+  group  => 'vagrant'
+}
+
+# 'clisp'
 # Quicklisp
 # .clisprc.lisp
 
@@ -70,246 +343,13 @@ package { "emacs24":
 # churn
 # shlint
 
-package { "git":
-  ensure => latest
-}
+# Bash 4.0...
 
-package { "vim":
-  ensure => latest
-}
+# Link bash profile
 
-# Link vim profile
-
-file { "/home/vagrant/.vimrc":
+file { '~/.bash_profile':
   ensure => link,
-  target => "/vagrant/.vimrc"
-}
-
-file { "/home/vagrant/.vim/":
-  ensure => directory,
-  owner => "vagrant",
-  group => "vagrant",
-}
-
-exec { "git vundle":
-  command => "/usr/bin/sudo -u vagrant git clone https://github.com/gmarik/vundle.git /home/vagrant/.vim/bundle/vundle",
-  require => [
-    Package["git"],
-    File["/home/vagrant/.vim/"]
-  ],
-  onlyif => "/usr/bin/test ! -d /home/vagrant/.vim/bundle/vundle/"
-}
-
-# Install Vim packages
-
-exec { "vundle":
-  command => "/usr/bin/sudo -u vagrant /usr/bin/vim +BundleInstall +qall",
-  environment => "HOME=/home/vagrant/",
-  refreshonly => true,
-  require => [
-    Package["vim"],
-    Exec["git vundle"]
-  ],
-  subscribe => File["/home/vagrant/.vimrc"]
-}
-
-# Fix Emacs permissions
-
-file { "/home/vagrant/.emacs.d/":
-  ensure => directory,
-  owner => "vagrant",
-  group => "vagrant"
-}
-
-exec { "git cask":
-  command => "/usr/bin/sudo -u vagrant git clone https://github.com/cask/cask.git /home/vagrant/.cask",
-  require => Package["git"],
-  onlyif => "/usr/bin/test ! -d /home/vagrant/.cask/"
-}
-
-# Link Cask profile
-
-file { "/home/vagrant/.emacs.d/Cask":
-  ensure => link,
-  target => "/vagrant/Cask",
-  require => File["/home/vagrant/.emacs.d/"]
-}
-
-# Link emacs profile
-
-file { "/home/vagrant/.emacs":
-  ensure => link,
-  target => "/vagrant/.emacs"
-}
-
-# Install Emacs packages
-
-exec { "cask":
-  command => "/usr/bin/sudo -u vagrant /usr/bin/emacs -q --batch --eval \"(progn (require 'cask \\\"~/.cask/cask.el\\\") (cask-initialize) (setq save-abbrevs nil) (cask-install) (kill-emacs))\"",
-  environment => "HOME=/home/vagrant/",
-  refreshonly => true,
-  require => [
-    Package["emacs24"],
-    Exec["git cask"]
-  ],
-  subscribe => File["/home/vagrant/.emacs.d/Cask"],
-}
-
-# Link nano profile
-
-file { "/home/vagrant/.nanorc":
-  ensure => link,
-  target => "/vagrant/.nanorc"
-}
-
-# Install Nano packages
-
-exec { "git nano":
-  command => "/usr/bin/sudo -u vagrant /usr/bin/git clone https://github.com/serialhex/nano-highlight.git ~/.nano",
-  environment => "HOME=/home/vagrant/",
-  require => Package["git"],
-  onlyif => "/usr/bin/test ! -d /home/vagrant/.nano/"
-}
-
-package { "curl":
-  ensure => latest
-}
-
-apt::ppa { "ppa:hrzhu/smlnj-backport": }
-
-package { "smlnj":
-  ensure => latest
-}
-
-# gcc, g++, make, etc.
-
-package { "build-essential":
-  ensure => latest
-}
-
-package { "strace":
-  ensure => latest
-}
-
-package { "splint":
-  ensure => latest
-}
-
-package { "cppcheck":
-  ensure => latest
-}
-
-package { "clang":
-  ensure => latest
-}
-
-# Chicken Scheme
-
-package { "chicken-bin":
-  ensure => latest
-}
-
-exec { "chicken cluckcheck":
-  command => "/usr/bin/chicken-install cluckcheck",
-  environment => "HOME=/home/vagrant/",
-  require => Package["chicken-bin"],
-  onlyif => "/usr/bin/test ! -f /var/lib/chicken/6/cluckcheck.o"
-}
-
-package { "erlang":
-  ensure => latest
-}
-
-package { "golang":
-  ensure => latest
-}
-
-package { "haskell-platform":
-  ensure => latest
-}
-
-# exec { "cabal update":
-#   command => "/usr/bin/sudo -u vagrant cabal update",
-#   environment => "HOME=/home/vagrant/",
-# }
-
-# exec { "cabal hlint":
-#   command => "/usr/bin/sudo -u vagrant /usr/bin/cabal -v3 install hlint 2>&1",
-#   environment => "HOME=/home/vagrant/",
-#   require => Exec["cabal update"],
-#   onlyif => "test ! -d /home/vagrant/.cabal/packages/hackage.haskell.org/hlint/"
-#   logoutput => true,
-# }
-
-# shellcheck...
-
-# xmllint from libxml2...
-
-# llvm-as, etc.
-
-package { "llvm":
-  ensure => latest
-}
-
-package { "lua5.1":
-  ensure => latest
-}
-
-package { "ocaml":
-  ensure => latest
-}
-
-package { "r-base":
-  ensure => latest
-}
-
-package { "gnu-smalltalk":
-  ensure => latest
-}
-
-package { "yasm":
-  ensure => latest
-}
-
-package { "zsh":
-  ensure => latest
-}
-
-# Empty zsh profile
-
-file { "/home/vagrant/.zshrc":
-  ensure => present
-}
-
-package { "tree":
-  ensure => latest
-}
-
-# pip for Python 2
-
-package { "python-pip":
-  ensure => latest
-}
-
-# Invoke
-# PyLint
-# PyFlakes
-# pep8
-# PyChecker
-
-package { ["vagrant", "virtualbox"]:
-  ensure => latest
-}
-
-class { "perl": }
-
-perl::cpan::module { "WWW::Mechanize": }
-
-perl::cpan::module { "App::Ack": }
-
-# Link to ack profile
-
-file { "/home/vagrant/.ackrc":
-  ensure => link,
-  target => "/vagrant/.ackrc"
+  target => '/vagrant/.bash_profile',
+  owner  => 'vagrant',
+  group  => 'vagrant'
 }
