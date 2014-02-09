@@ -32,6 +32,7 @@ package { "emacs24":
   # # Bash 4.0
 
   # "clisp",
+  # Quicklisp
 
   # # Java
 
@@ -47,10 +48,6 @@ package { "emacs24":
 # LaTeX
 
 # Maven
-
-# Quicklisp
-
-# Erlang quickcheck
 
 # NVM / Node ?
 
@@ -69,8 +66,6 @@ package { "emacs24":
 # nokogiri
 # specs
 # rubycheck
-
-# Python 3 / pip3
 
 # CPAN, PPM
 # yaml, Test, www::mechanize
@@ -263,5 +258,11 @@ package { "tree":
 }
 
 package { "splint":
+  ensure => latest
+}
+
+# pip for Python 2
+
+package { "python-pip":
   ensure => latest
 }
