@@ -209,4 +209,18 @@ exec { "cask":
   subscribe => File["/home/vagrant/.emacs.d/Cask"],
 }
 
-# .nano...
+# Link nano profile
+
+file { "/home/vagrant/.nanorc":
+  ensure => link,
+  target => "/vagrant/.nanorc"
+}
+
+# Install Nano packages
+
+exec { "git nano":
+  command => "/usr/bin/sudo -u vagrant /usr/bin/git clone https://github.com/serialhex/nano-highlight.git ~/.nano",
+  environment => "HOME=/home/vagrant/",
+  require => Package["git"],
+  onlyif => "/usr/bin/test ! -d /home/vagrant/.nano/"
+}
