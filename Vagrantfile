@@ -5,7 +5,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box_url = 'http://files.vagrantup.com/precise64.box'
 
   # Install puppet modules
-  config.vm.provision :shell, path: 'bootstrap.rb'
+  config.vm.provision :shell, path: 'bootstrap.rb', args: "puppetlabs-stdlib \
+    puppetlabs/apt \
+    puppetlabs/vcsrepo \
+    example42/puppi \
+    example42/perl \
+    example42/mongodb"
 
   config.vm.provision :puppet
 end

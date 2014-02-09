@@ -4,13 +4,7 @@ modules_dir = '/etc/puppet/modules'
 
 puts `mkdir -p #{modules_dir}` unless File::exists? modules_dir
   
-mods = [
-  "puppetlabs-stdlib",
-  "puppetlabs/apt",
-  "puppetlabs/vcsrepo",
-  "example42/puppi",
-  "example42/perl"
-]
+mods = ARGV
 
 installed = `puppet module list`.split "\n"
 

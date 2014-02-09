@@ -7,8 +7,7 @@ class { 'apt':
 exec { 'apt-update':
   command => 'apt-get update',
   path    => '/bin:/usr/bin',
-  timeout => 0,
-  refreshonly => true
+  timeout => 0
 }
 
 Exec['apt-update'] -> Package <| |>
@@ -314,12 +313,6 @@ file { '/home/vagrant/.ackrc':
 # Maven
 # Checkstyle
 
-# Apache
-# PHP
-# MySQL
-# Redis
-# SQLite
-
 # LaTeX
 
 # NVM / Node ?
@@ -363,3 +356,25 @@ file { '/home/vagrant/.bash_profile':
   owner  => 'vagrant',
   group  => 'vagrant'
 }
+
+package { 'apache2':
+  ensure => latest
+}
+
+package { ['php5', 'libapache2-mod-php5']:
+  ensure => latest
+}
+
+package { ['mysql-server', 'mysql-client']:
+  ensure => latest
+}
+
+package { ['sqlite3', 'libsqlite3-dev']:
+  ensure => latest
+}
+
+package { 'redis-server':
+  ensure => latest
+}
+
+class { 'mongodb': }
