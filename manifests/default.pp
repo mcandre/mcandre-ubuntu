@@ -19,10 +19,6 @@ package { 'emacs24':
   require => Apt::Ppa['ppa:cassou/emacs']
 }
 
-package { 'git':
-  ensure => latest
-}
-
 package { 'vim':
   ensure => latest
 }
@@ -91,7 +87,7 @@ file { '/home/vagrant/.emacs.d/Cask':
   require => File['/home/vagrant/.emacs.d/']
 }
 
-# Link emacs profile
+# Link Emacs profile
 
 file { '/home/vagrant/.emacs':
   ensure => link,
@@ -119,7 +115,7 @@ exec { 'cask':
   subscribe   => File['/home/vagrant/.emacs.d/Cask'],
 }
 
-# Link nano profile
+# Link Nano profile
 
 file { '/home/vagrant/.nanorc':
   ensure => link,
@@ -136,10 +132,6 @@ vcsrepo { '/home/vagrant/.nano':
   source   => 'https://github.com/serialhex/nano-highlight',
   owner    => 'vagrant',
   group    => 'vagrant'
-}
-
-package { 'curl':
-  ensure => latest
 }
 
 apt::ppa { 'ppa:hrzhu/smlnj-backport': }
@@ -205,9 +197,10 @@ exec { 'cabal update':
 
 # Fix cabal permissions
 
-file { '/root/.cabal/bin':
-  ensure => directory,
-  mode => 644
+file { '/root':
+  ensure  => directory,
+  mode    => 777,
+  recurse => true
 }
 
 exec { 'cabal hlint':
@@ -378,5 +371,13 @@ package { 'redis-server':
 class { 'mongodb': }
 
 package { 'texlive':
+  ensure => latest
+}
+
+package { 'curl':
+  ensure => latest
+}
+
+package { 'git':
   ensure => latest
 }
