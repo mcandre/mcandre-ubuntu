@@ -27,20 +27,20 @@ package { 'vim':
 
 # Link vim profile
 
-file { '~/.vimrc':
+file { '/home/vagrant/.vimrc':
   ensure => link,
   target => '/vagrant/.vimrc',
   owner  => 'vagrant',
   group  => 'vagrant'
 }
 
-file { '~/.vim/':
+file { '/home/vagrant/.vim/':
   ensure => directory,
   owner  => 'vagrant',
   group  => 'vagrant',
 }
 
-vcsrepo { '~/.vim/bundle/vundle':
+vcsrepo { '/home/vagrant/.vim/bundle/vundle':
   ensure   => present,
   provider => git,
   source   => 'https://github.com/gmarik/vundle',
@@ -58,14 +58,14 @@ exec { 'vundle':
   refreshonly => true,
   require     => [
     Package['vim'],
-    Vcsrepo['vundle']
+    Vcsrepo['/home/vagrant/.vim/bundle/vundle']
   ],
-  subscribe   => File['~/.vimrc']
+  subscribe   => File['/home/vagrant/.vimrc']
 }
 
 # Fix Emacs permissions
 
-file { '~/.emacs.d/':
+file { '/home/vagrant/.emacs.d/':
   ensure => directory,
   owner  => 'vagrant',
   group  => 'vagrant'
@@ -81,17 +81,17 @@ vcsrepo { '/home/vagrant/.cask':
 
 # Link Cask profile
 
-file { '~/.emacs.d/Cask':
+file { '/home/vagrant/.emacs.d/Cask':
   ensure  => link,
   target  => '/vagrant/Cask',
   owner   => 'vagrant',
   group   => 'vagrant',
-  require => File['~/.emacs.d/']
+  require => File['/home/vagrant/.emacs.d/']
 }
 
 # Link emacs profile
 
-file { '~/.emacs':
+file { '/home/vagrant/.emacs':
   ensure => link,
   target => '/vagrant/.emacs',
   owner  => 'vagrant',
@@ -108,18 +108,18 @@ exec { 'cask':
     (kill-emacs))\"',
   path        => '/usr/bin',
   user        => 'vagrant',
-  # environment => 'HOME=/home/vagrant/',
+  environment => 'HOME=/home/vagrant/',
   refreshonly => true,
   require     => [
     Package['emacs24'],
     Vcsrepo['/home/vagrant/.cask']
   ],
-  subscribe   => File['~/.emacs.d/Cask'],
+  subscribe   => File['/home/vagrant/.emacs.d/Cask'],
 }
 
 # Link nano profile
 
-file { '~/.nanorc':
+file { '/home/vagrant/.nanorc':
   ensure => link,
   target => '/vagrant/.nanorc',
   owner  => 'vagrant',
@@ -209,7 +209,7 @@ exec { 'cabal hlint':
   path      => '/usr/sbin',
   # environment => 'HOME=/home/vagrant/',
   require   => Exec['cabal update'],
-  onlyif    => 'test ! -d ~/.cabal/packages/hackage.haskell.org/hlint',
+  onlyif    => 'test ! -d /home/vagrant/.cabal/packages/hackage.haskell.org/hlint',
   logoutput => true,
 }
 
@@ -219,7 +219,7 @@ exec { 'cabal hlint':
 #   path      => '/usr/sbin',
 # # environment => 'HOME=/home/vagrant/',
 #   require   => Exec['cabal update'],
-#   onlyif    => 'test ! -d ~/.cabal/packages/hackage.haskell.org/shellcheck',
+#   onlyif    => 'test ! -d /home/vagrant/.cabal/packages/hackage.haskell.org/shellcheck',
 #   logoutput => true,
 # }
 
@@ -257,7 +257,7 @@ package { 'zsh':
 
 # Empty zsh profile
 
-file { '~/.zshrc':
+file { '/home/vagrant/.zshrc':
   ensure => present,
   owner  => 'vagrant',
   group  => 'vagrant'
@@ -291,7 +291,7 @@ perl::cpan::module { 'App::Ack': }
 
 # Link to ack profile
 
-file { '~/.ackrc':
+file { '/home/vagrant/.ackrc':
   ensure => link,
   target => '/vagrant/.ackrc',
   owner  => 'vagrant',
@@ -347,7 +347,7 @@ file { '~/.ackrc':
 
 # Link bash profile
 
-file { '~/.bash_profile':
+file { '/home/vagrant/.bash_profile':
   ensure => link,
   target => '/vagrant/.bash_profile',
   owner  => 'vagrant',
