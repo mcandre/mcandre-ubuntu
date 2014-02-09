@@ -14,7 +14,8 @@ Exec['apt-update'] -> Package <| |>
 apt::ppa { 'ppa:cassou/emacs': }
 
 package { 'emacs24':
-  ensure => latest
+  ensure => latest,
+  require => Apt::Ppa['ppa:cassou/emacs']
 }
 
 package { 'git':
@@ -143,7 +144,8 @@ package { 'curl':
 apt::ppa { 'ppa:hrzhu/smlnj-backport': }
 
 package { 'smlnj':
-  ensure => latest
+  ensure => latest,
+  require => Apt::Ppa['ppa:hrzhu/smlnj-backport']
 }
 
 # gcc, g++, make, etc.
@@ -177,9 +179,9 @@ package { 'chicken-bin':
 exec { 'chicken cluckcheck':
   command => 'chicken-install cluckcheck',
   path    => '/usr/bin',
-  # environment => 'HOME=/home/vagrant/',
   require => Package['chicken-bin'],
-  onlyif  => 'test ! -f /var/lib/chicken/6/cluckcheck.o'
+  onlyif  => '/usr/bin/test ! -f /var/lib/chicken/6/cluckcheck.o',
+  logoutput => true
 }
 
 package { 'erlang':
@@ -196,20 +198,16 @@ package { 'haskell-platform':
 
 exec { 'cabal update':
   command   => 'cabal update',
-  user      => 'vagrant',
   path      => '/usr/bin',
-  # environment => 'HOME=/home/vagrant/',
   require   => Package['haskell-platform'],
   logoutput => true
 }
 
 exec { 'cabal hlint':
   command   => 'cabal -v3 install hlint',
-  user      => 'vagrant',
-  path      => '/usr/sbin',
-  # environment => 'HOME=/home/vagrant/',
+  path      => '/usr/bin',
   require   => Exec['cabal update'],
-  onlyif    => 'test ! -d /home/vagrant/.cabal/packages/hackage.haskell.org/hlint',
+  onlyif    => '/usr/bin/test ! -d /home/root/.cabal/packages/hackage.haskell.org/hlint',
   logoutput => true,
 }
 
@@ -219,7 +217,7 @@ exec { 'cabal hlint':
 #   path      => '/usr/sbin',
 # # environment => 'HOME=/home/vagrant/',
 #   require   => Exec['cabal update'],
-#   onlyif    => 'test ! -d /home/vagrant/.cabal/packages/hackage.haskell.org/shellcheck',
+#   onlyif    => '/usr/bin/test ! -d /home/vagrant/.cabal/packages/hackage.haskell.org/shellcheck',
 #   logoutput => true,
 # }
 
