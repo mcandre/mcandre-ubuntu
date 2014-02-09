@@ -37,7 +37,6 @@ package { "emacs24":
   # # Java
 
 
-  # "zsh"
   # ]:
 #   ensure => latest
 # }
@@ -259,4 +258,14 @@ package { "gnu-smalltalk":
 
 package { "yasm":
   ensure => latest
+}
+
+package { "zsh":
+  ensure => latest
+}
+
+# Empty zsh profile
+
+file { "/home/vagrant/.zshrc":
+  ensure => present
 }
