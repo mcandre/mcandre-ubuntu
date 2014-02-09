@@ -33,9 +33,7 @@ package { "emacs24":
 
   # "clisp",
 
-
   # # Java
-
 
   # ]:
 #   ensure => latest
@@ -43,16 +41,6 @@ package { "emacs24":
 
 # Scala
 # Leiningen/Clojure
-
-# Dev tools
-
-package { "tree":
-  ensure => latest
-}
-
-# package { "splint":
-#   ensure => latest
-# }
 
 # Apache
 
@@ -268,4 +256,12 @@ package { "zsh":
 
 file { "/home/vagrant/.zshrc":
   ensure => present
+}
+
+package { "tree":
+  ensure => latest
+}
+
+package { "splint":
+  ensure => latest
 }
