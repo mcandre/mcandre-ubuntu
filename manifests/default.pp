@@ -37,7 +37,6 @@ package { "emacs24":
   # # Java
 
 
-  # "gnu-smalltalk",
   # "yasm",
   # "zsh"
   # ]:
@@ -252,5 +251,9 @@ package { "ocaml":
 }
 
 package { "r-base":
+  ensure => latest
+}
+
+package { "gnu-smalltalk":
   ensure => latest
 }
