@@ -27,16 +27,6 @@ package { "emacs24":
   ensure => latest
 }
 
-# Tons of programming languages
-
-# apt::ppa { "ppa:hrzhu/smlnj-backport":
-#   before => Package["smlnj"]
-# }
-
-# package { "smlnj":
-#   ensure => latest
-# }
-
 # .clisprc.lisp
 
 # package { [
@@ -123,10 +113,6 @@ package { "tree":
 package { "git":
   ensure => latest
 }
-
-# package { "curl":
-#   ensure => latest
-# }
 
 package { "vim":
   ensure => latest
@@ -223,4 +209,16 @@ exec { "git nano":
   environment => "HOME=/home/vagrant/",
   require => Package["git"],
   onlyif => "/usr/bin/test ! -d /home/vagrant/.nano/"
+}
+
+package { "curl":
+  ensure => latest
+}
+
+apt::ppa { "ppa:hrzhu/smlnj-backport":
+  before => Package["smlnj"]
+}
+
+package { "smlnj":
+  ensure => latest
 }
