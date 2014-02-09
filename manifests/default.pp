@@ -313,8 +313,6 @@ file { '/home/vagrant/.ackrc':
 # Maven
 # Checkstyle
 
-# LaTeX
-
 # NVM / Node ?
 # coffee
 # coffeelint
@@ -378,3 +376,7 @@ package { 'redis-server':
 }
 
 class { 'mongodb': }
+
+package { 'texlive':
+  ensure => latest
+}
