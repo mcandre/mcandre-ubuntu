@@ -379,8 +379,22 @@ rvm_gem {
     require      => Rvm_system_ruby['ruby-2.1.0'];
 }
 
-# Rspec
-# Guard
+rvm_gem {
+  'rspec':
+    name         => 'rspec',
+    ruby_version => 'ruby-2.1.0',
+    ensure       => present,
+    require      => Rvm_system_ruby['ruby-2.1.0'];
+}
+
+rvm_gem {
+  'guard':
+    name         => 'guard',
+    ruby_version => 'ruby-2.1.0',
+    ensure       => present,
+    require      => Rvm_system_ruby['ruby-2.1.0'];
+}
+
 # nokogiri
 # specs
 # rubycheck
