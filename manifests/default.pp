@@ -141,6 +141,13 @@ package { 'smlnj':
   require => Apt::Ppa['ppa:hrzhu/smlnj-backport']
 }
 
+# apt::ppa { 'ppa:bjourne/factor': }
+
+# package { 'factor':
+#   ensure  => present,
+#   require => Apt::Ppa['ppa:bjourne/factor']
+# }
+
 # gcc, g++, make, etc.
 
 package { 'build-essential':
@@ -553,7 +560,8 @@ exec { 'cl-quickcheck':
   path        => '/usr/bin',
   user        => 'vagrant',
   environment => 'HOME=/home/vagrant',
-  require     => Exec['clisp quicklisp']
+  require     => Exec['clisp quicklisp'],
+  onlyif      => '/usr/bin/test ! -d /home/vagrant/quicklisp/dists/quicklisp/software/cl-quickcheck-*-git'
 }
 
 package { 'openjdk-7-jdk':
