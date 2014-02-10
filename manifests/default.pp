@@ -7,8 +7,7 @@ class { 'apt':
 exec { 'apt-update':
   command     => 'apt-get update',
   path        => '/bin:/usr/bin',
-  timeout     => 0,
-  refreshonly => true
+  timeout     => 0
 }
 
 Exec['apt-update'] -> Package <| |>
@@ -164,6 +163,10 @@ package { 'clang':
   ensure => present
 }
 
+package { 'tidy':
+  ensure => present
+}
+
 # Chicken Scheme
 
 package { 'chicken-bin':
@@ -210,19 +213,21 @@ file { '/root/.cabal/bin':
 }
 
 exec { 'cabal hlint':
-  command   => 'cabal install hlint',
-  path      => '/bin:/usr/bin',
-  timeout   => 0,
-  require   => Exec['cabal update'],
-  onlyif    => '/usr/bin/test ! -d /root/.cabal/bin/hlint',
+  command     => 'cabal install hlint',
+  path        => '/bin:/usr/bin',
+  environment => 'HOME=/root',
+  timeout     => 0,
+  require     => Exec['cabal update'],
+  onlyif      => '/usr/bin/test ! -d /root/.cabal/packages/hackage.haskell.org/hlint',
 }
 
 exec { 'cabal shellcheck':
-  command   => 'cabal install shellcheck',
-  path      => '/bin:/usr/bin',
-  timeout   => 0,
-  require   => Exec['cabal update'],
-  onlyif    => '/usr/bin/test ! -d /root/.cabal/bin/shellcheck'
+  command     => 'cabal install shellcheck',
+  path        => '/bin:/usr/bin',
+  environment => 'HOME=/root',
+  timeout     => 0,
+  require     => Exec['cabal update'],
+  onlyif      => '/usr/bin/test ! -d /root/.cabal/packages/hackage.haskell.org/ShellCheck',
 }
 
 # llvm-as, etc.
@@ -326,25 +331,37 @@ file { '/home/vagrant/.ackrc':
 # Maven
 # Checkstyle
 
-# NVM / Node ?
-# coffee
-# coffeelint
-# stylus
-# less
-# csslint
-# tidy
-# sass
-# sasslint
-# mocha
+class { 'nodejs':
+  version => 'v0.10.25'
+}
 
-# # Fix rvm timeout
+package { 'coffee':
+  provider => npm
+}
 
-# file { '/etc/rvmrc':
-#   content => 'umask u=rwx,g=rwx,o=rx
-#               export rvm_max_time_flag=20',
-#   mode    => '0664',
-#   before  => Class['rvm']
-# }
+package { 'coffeelint':
+  provider => npm
+}
+
+package { 'stylus':
+  provider => npm
+}
+
+package { 'less':
+  provider => npm
+}
+
+package { 'csslint':
+  provider => npm
+}
+
+package { 'sass':
+  provider => npm
+}
+
+package { 'mocha':
+  provider => npm
+}
 
 class { 'rvm':
   version => '1.25.17'
@@ -482,6 +499,14 @@ rvm_gem {
   'shlint':
     ensure       => present,
     name         => 'shlint',
+    ruby_version => 'ruby-2.1.0',
+    require      => Rvm_system_ruby['ruby-2.1.0'];
+}
+
+rvm_gem {
+  'sasslint':
+    ensure       => present,
+    name         => 'sasslint',
     ruby_version => 'ruby-2.1.0',
     require      => Rvm_system_ruby['ruby-2.1.0'];
 }

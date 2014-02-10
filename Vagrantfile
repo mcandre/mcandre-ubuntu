@@ -18,7 +18,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     example42/perl \
     example42/mongodb \
     stankevich/python \
-    maestrodev/rvm"
+    maestrodev/rvm \
+    willdurand/nodejs"
 
   config.vm.provision :puppet
 end
