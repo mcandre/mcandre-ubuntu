@@ -5,9 +5,10 @@ class { 'apt':
 }
 
 exec { 'apt-update':
-  command => 'apt-get update',
-  path    => '/bin:/usr/bin',
-  timeout => 0
+  command     => 'apt-get update',
+  path        => '/bin:/usr/bin',
+  timeout     => 0,
+  refreshonly => true
 }
 
 Exec['apt-update'] -> Package <| |>
@@ -15,12 +16,12 @@ Exec['apt-update'] -> Package <| |>
 apt::ppa { 'ppa:cassou/emacs': }
 
 package { 'emacs24':
-  ensure => latest,
+  ensure => present,
   require => Apt::Ppa['ppa:cassou/emacs']
 }
 
 package { 'vim':
-  ensure => latest
+  ensure => present
 }
 
 # Link vim profile
@@ -137,36 +138,36 @@ vcsrepo { '/home/vagrant/.nano':
 apt::ppa { 'ppa:hrzhu/smlnj-backport': }
 
 package { 'smlnj':
-  ensure => latest,
+  ensure => present,
   require => Apt::Ppa['ppa:hrzhu/smlnj-backport']
 }
 
 # gcc, g++, make, etc.
 
 package { 'build-essential':
-  ensure => latest
+  ensure => present
 }
 
 package { 'strace':
-  ensure => latest
+  ensure => present
 }
 
 package { 'splint':
-  ensure => latest
+  ensure => present
 }
 
 package { 'cppcheck':
-  ensure => latest
+  ensure => present
 }
 
 package { 'clang':
-  ensure => latest
+  ensure => present
 }
 
 # Chicken Scheme
 
 package { 'chicken-bin':
-  ensure => latest
+  ensure => present
 }
 
 exec { 'chicken cluckcheck':
@@ -177,15 +178,15 @@ exec { 'chicken cluckcheck':
 }
 
 package { 'erlang':
-  ensure => latest
+  ensure => present
 }
 
 package { 'golang':
-  ensure => latest
+  ensure => present
 }
 
 package { 'haskell-platform':
-  ensure => latest
+  ensure => present
 }
 
 exec { 'cabal update':
@@ -198,6 +199,16 @@ exec { 'cabal update':
 # Fix cabal permissions
 
 file { '/root':
+  ensure  => directory,
+  mode    => 644,
+}
+
+file { '/root/.cabal':
+  ensure  => directory,
+  mode    => 644
+}
+
+file { '/root/.cabal/bin':
   ensure  => directory,
   mode    => 777,
   recurse => true
@@ -222,31 +233,31 @@ exec { 'cabal shellcheck':
 # llvm-as, etc.
 
 package { 'llvm':
-  ensure => latest
+  ensure => present
 }
 
 package { 'lua5.1':
-  ensure => latest
+  ensure => present
 }
 
 package { 'ocaml':
-  ensure => latest
+  ensure => present
 }
 
 package { 'r-base':
-  ensure => latest
+  ensure => present
 }
 
 package { 'gnu-smalltalk':
-  ensure => latest
+  ensure => present
 }
 
 package { 'yasm':
-  ensure => latest
+  ensure => present
 }
 
 package { 'zsh':
-  ensure => latest
+  ensure => present
 }
 
 # Empty zsh profile
@@ -258,7 +269,7 @@ file { '/home/vagrant/.zshrc':
 }
 
 package { 'tree':
-  ensure => latest
+  ensure => present
 }
 
 # Python 2 and pip 2
@@ -270,27 +281,27 @@ class { 'python':
 }
 
 python::pip { 'invoke':
-  ensure => latest,
+  ensure => present,
   owner  => 'root'
 }
 
 python::pip { 'pylint':
-  ensure => latest,
+  ensure => present,
   owner  => 'root'
 }
 
 python::pip { 'pyflakes':
-  ensure => latest,
+  ensure => present,
   owner  => 'root'
 }
 
 python::pip { 'pep8':
-  ensure => latest,
+  ensure => present,
   owner  => 'root'
 }
 
 package { ['vagrant', 'virtualbox']:
-  ensure => latest
+  ensure => present
 }
 
 class { 'perl': }
@@ -352,9 +363,24 @@ rvm_system_ruby {
     default_use => false;
 }
 
-# Cucumber
+rvm_gem {
+  'bundler':
+    name         => 'bundler',
+    ruby_version => 'ruby-2.1.0',
+    ensure       => present,
+    require      => Rvm_system_ruby['ruby-2.1.0'];
+}
+
+rvm_gem {
+  'cucumber':
+    name         => 'cucumber',
+    ruby_version => 'ruby-2.1.0',
+    ensure       => present,
+    require      => Rvm_system_ruby['ruby-2.1.0'];
+}
+
+# Rspec
 # Guard
-# rspec
 # nokogiri
 # specs
 # rubycheck
@@ -383,41 +409,41 @@ file { '/home/vagrant/.bash_profile':
 }
 
 package { 'apache2':
-  ensure => latest
+  ensure => present
 }
 
 package { ['php5', 'libapache2-mod-php5']:
-  ensure => latest
+  ensure => present
 }
 
 package { ['mysql-server', 'mysql-client']:
-  ensure => latest
+  ensure => present
 }
 
 package { ['sqlite3', 'libsqlite3-dev']:
-  ensure => latest
+  ensure => present
 }
 
 package { 'redis-server':
-  ensure => latest
+  ensure => present
 }
 
 class { 'mongodb': }
 
 package { 'texlive':
-  ensure => latest
+  ensure => present
 }
 
 package { 'curl':
-  ensure => latest
+  ensure => present
 }
 
 package { 'git':
-  ensure => latest
+  ensure => present
 }
 
 # xmllint
 
 package { 'libxml2-utils':
-  ensure => latest
+  ensure => present
 }
