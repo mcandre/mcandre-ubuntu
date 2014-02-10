@@ -218,7 +218,8 @@ exec { 'cabal hlint':
   environment => 'HOME=/root',
   timeout     => 0,
   require     => Exec['cabal update'],
-  onlyif      => '/usr/bin/test ! -d /root/.cabal/packages/hackage.haskell.org/hlint',
+  onlyif      => '/usr/bin/test ! -d \
+    /root/.cabal/packages/hackage.haskell.org/hlint',
 }
 
 exec { 'cabal shellcheck':
@@ -227,7 +228,8 @@ exec { 'cabal shellcheck':
   environment => 'HOME=/root',
   timeout     => 0,
   require     => Exec['cabal update'],
-  onlyif      => '/usr/bin/test ! -d /root/.cabal/packages/hackage.haskell.org/ShellCheck',
+  onlyif      => '/usr/bin/test ! -d \
+    /root/.cabal/packages/hackage.haskell.org/ShellCheck',
 }
 
 # llvm-as, etc.
@@ -507,10 +509,50 @@ package { 'clisp':
 
 file { '/home/vagrant/.clisprc.lisp':
   ensure => link,
-  target => '/vagrant/.clisprc.lisp'
+  target => '/vagrant/.clisprc.lisp',
+  owner  => 'vagrant',
+  group  => 'vagrant'
 }
 
-# Quicklisp...
+exec { '/home/vagrant/quicklisp.lisp':
+  command => 'wget http://beta.quicklisp.org/quicklisp.lisp',
+  path    => '/usr/bin',
+  user    => 'vagrant',
+  cwd     => '/home/vagrant',
+  onlyif  => '/usr/bin/test ! -f /home/vagrant/quicklisp.lisp'
+}
+
+file { '/home/vagrant/install-quicklisp.lisp':
+  ensure => link,
+  target => '/vagrant/install-quicklisp.lisp',
+  owner  => 'vagrant',
+  group  => 'vagrant'
+}
+
+exec { 'clisp quicklisp':
+  command     => 'clisp install-quicklisp.lisp',
+  path        => '/usr/bin',
+  user        => 'vagrant',
+  cwd         => '/home/vagrant',
+  environment => 'HOME=/home/vagrant',
+  require     => [
+    Package['clisp'],
+    File['/home/vagrant/.clisprc.lisp'],
+    File['/home/vagrant/install-quicklisp.lisp'],
+    Exec['/home/vagrant/quicklisp.lisp']
+  ],
+  onlyif      => '/usr/bin/test ! -d /home/vagrant/quicklisp'
+}
+
+exec { 'cl-quickcheck':
+  command     => 'clisp -x "(ql:quickload \'cl-quickcheck)"',
+  path        => '/usr/bin',
+  user        => 'vagrant',
+  environment => 'HOME=/home/vagrant',
+  require     => Exec['clisp quicklisp']
+}
+
+# cl-quickcheck...
 
 package { 'openjdk-7-jdk':
   ensure => present
