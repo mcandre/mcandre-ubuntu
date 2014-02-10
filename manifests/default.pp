@@ -271,22 +271,22 @@ class { 'python':
 
 python::pip { 'invoke':
   ensure => latest,
-  owner => 'root'
+  owner  => 'root'
 }
 
 python::pip { 'pylint':
   ensure => latest,
-  owner => 'root'
+  owner  => 'root'
 }
 
 python::pip { 'pyflakes':
   ensure => latest,
-  owner => 'root'
+  owner  => 'root'
 }
 
 python::pip { 'pep8':
   ensure => latest,
-  owner => 'root'
+  owner  => 'root'
 }
 
 package { ['vagrant', 'virtualbox']:
@@ -331,7 +331,27 @@ file { '/home/vagrant/.ackrc':
 # sasslint
 # mocha
 
-# Ruby 2 / RubyGems ?
+# # Fix rvm timeout
+
+# file { '/etc/rvmrc':
+#   content => 'umask u=rwx,g=rwx,o=rx
+#               export rvm_max_time_flag=20',
+#   mode    => '0664',
+#   before  => Class['rvm']
+# }
+
+class { 'rvm':
+  version => '1.25.17'
+}
+
+rvm::system_user { vagrant: ; }
+
+rvm_system_ruby {
+  'ruby-2.1.0':
+    ensure      => present,
+    default_use => false;
+}
+
 # Cucumber
 # Guard
 # rspec
