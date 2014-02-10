@@ -327,7 +327,7 @@ class { 'nodejs':
   version => 'v0.10.25'
 }
 
-package { 'coffee':
+package { 'coffee-script':
   provider => npm
 }
 
@@ -352,6 +352,10 @@ package { 'sass':
 }
 
 package { 'mocha':
+  provider => npm
+}
+
+package { 'jshint':
   provider => npm
 }
 
