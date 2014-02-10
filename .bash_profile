@@ -1,3 +1,6 @@
+# Fix recursive globs
+shopt -s globstar
+
 # Cask
 export PATH="$PATH:~/.cask/bin"
 
