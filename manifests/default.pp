@@ -552,8 +552,6 @@ exec { 'cl-quickcheck':
   require     => Exec['clisp quicklisp']
 }
 
-# cl-quickcheck...
-
 package { 'openjdk-7-jdk':
   ensure => present
 }
