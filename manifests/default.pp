@@ -16,7 +16,7 @@ Exec['apt-update'] -> Package <| |>
 apt::ppa { 'ppa:cassou/emacs': }
 
 package { 'emacs24':
-  ensure => present,
+  ensure  => present,
   require => Apt::Ppa['ppa:cassou/emacs']
 }
 
@@ -138,7 +138,7 @@ vcsrepo { '/home/vagrant/.nano':
 apt::ppa { 'ppa:hrzhu/smlnj-backport': }
 
 package { 'smlnj':
-  ensure => present,
+  ensure  => present,
   require => Apt::Ppa['ppa:hrzhu/smlnj-backport']
 }
 
@@ -198,19 +198,14 @@ exec { 'cabal update':
 
 # Fix cabal permissions
 
-file { '/root':
+file { ['/root', '/root/.cabal']:
   ensure  => directory,
-  mode    => 644,
-}
-
-file { '/root/.cabal':
-  ensure  => directory,
-  mode    => 644
+  mode    => '0644',
 }
 
 file { '/root/.cabal/bin':
   ensure  => directory,
-  mode    => 777,
+  mode    => '0777',
   recurse => true
 }
 
@@ -219,7 +214,7 @@ exec { 'cabal hlint':
   path      => '/bin:/usr/bin',
   timeout   => 0,
   require   => Exec['cabal update'],
-  onlyif    => '/usr/bin/test ! -d /root/.cabal/packages/hackage.haskell.org/hlint',
+  onlyif    => '/usr/bin/test ! -d /root/.cabal/bin/hlint',
 }
 
 exec { 'cabal shellcheck':
@@ -227,7 +222,7 @@ exec { 'cabal shellcheck':
   path      => '/bin:/usr/bin',
   timeout   => 0,
   require   => Exec['cabal update'],
-  onlyif    => '/usr/bin/test ! -d /root/.cabal/packages/hackage.haskell.org/ShellCheck'
+  onlyif    => '/usr/bin/test ! -d /root/.cabal/bin/shellcheck'
 }
 
 # llvm-as, etc.
@@ -309,7 +304,7 @@ class { 'perl': }
 perl::cpan::module { 'WWW::Mechanize': }
 
 perl::cpan::module { 'App::Ack':
-  require => Package["build-essential"]
+  require => Package['build-essential']
 }
 
 # Link to ack profile
@@ -355,7 +350,7 @@ class { 'rvm':
   version => '1.25.17'
 }
 
-rvm::system_user { vagrant: ; }
+rvm::system_user { 'vagrant': ; }
 
 rvm_system_ruby {
   'ruby-2.1.0':
@@ -365,51 +360,131 @@ rvm_system_ruby {
 
 rvm_gem {
   'bundler':
+    ensure       => present,
     name         => 'bundler',
     ruby_version => 'ruby-2.1.0',
-    ensure       => present,
     require      => Rvm_system_ruby['ruby-2.1.0'];
 }
 
 rvm_gem {
   'cucumber':
+    ensure       => present,
     name         => 'cucumber',
     ruby_version => 'ruby-2.1.0',
-    ensure       => present,
     require      => Rvm_system_ruby['ruby-2.1.0'];
 }
 
 rvm_gem {
   'rspec':
+    ensure       => present,
     name         => 'rspec',
     ruby_version => 'ruby-2.1.0',
-    ensure       => present,
     require      => Rvm_system_ruby['ruby-2.1.0'];
 }
 
 rvm_gem {
   'guard':
+    ensure       => present,
     name         => 'guard',
     ruby_version => 'ruby-2.1.0',
-    ensure       => present,
     require      => Rvm_system_ruby['ruby-2.1.0'];
 }
 
-# nokogiri
-# specs
-# rubycheck
-# puppet-lint
-# reek
-# flay
-# roodi
-# cane
-# excellent
-# rubycop
-# heckle
-# saikuro
-# flog
-# churn
-# shlint
+rvm_gem {
+  'specs':
+    ensure       => present,
+    name         => 'specs',
+    ruby_version => 'ruby-2.1.0',
+    require      => Rvm_system_ruby['ruby-2.1.0'];
+}
+
+rvm_gem {
+  'puppet-lint':
+    ensure       => present,
+    name         => 'puppet-lint',
+    ruby_version => 'ruby-2.1.0',
+    require      => Rvm_system_ruby['ruby-2.1.0'];
+}
+
+rvm_gem {
+  'reek':
+    ensure       => present,
+    name         => 'reek',
+    ruby_version => 'ruby-2.1.0',
+    require      => Rvm_system_ruby['ruby-2.1.0'];
+}
+
+rvm_gem {
+  'flay':
+    ensure       => present,
+    name         => 'flay',
+    ruby_version => 'ruby-2.1.0',
+    require      => Rvm_system_ruby['ruby-2.1.0'];
+}
+
+rvm_gem {
+  'roodi':
+    ensure       => present,
+    name         => 'roodi',
+    ruby_version => 'ruby-2.1.0',
+    require      => Rvm_system_ruby['ruby-2.1.0'];
+}
+
+rvm_gem {
+  'cane':
+    ensure       => present,
+    name         => 'cane',
+    ruby_version => 'ruby-2.1.0',
+    require      => Rvm_system_ruby['ruby-2.1.0'];
+}
+
+rvm_gem {
+  'excellent':
+    ensure       => present,
+    name         => 'excellent',
+    ruby_version => 'ruby-2.1.0',
+    require      => Rvm_system_ruby['ruby-2.1.0'];
+}
+
+rvm_gem {
+  'rubocop':
+    ensure       => present,
+    name         => 'rubocop',
+    ruby_version => 'ruby-2.1.0',
+    require      => Rvm_system_ruby['ruby-2.1.0'];
+}
+
+rvm_gem {
+  'flog':
+    ensure       => present,
+    name         => 'flog',
+    ruby_version => 'ruby-2.1.0',
+    require      => Rvm_system_ruby['ruby-2.1.0'];
+}
+
+rvm_gem {
+  'tailor':
+    ensure       => present,
+    name         => 'tailor',
+    ruby_version => 'ruby-2.1.0',
+    require      => Rvm_system_ruby['ruby-2.1.0'];
+}
+
+rvm_gem {
+  'churn':
+    ensure       => present,
+    name         => 'churn',
+    ruby_version => 'ruby-2.1.0',
+    require      => Rvm_system_ruby['ruby-2.1.0'];
+}
+
+rvm_gem {
+  'shlint':
+    ensure       => present,
+    name         => 'shlint',
+    ruby_version => 'ruby-2.1.0',
+    require      => Rvm_system_ruby['ruby-2.1.0'];
+}
 
 # Bash 4.0...
 
