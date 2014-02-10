@@ -321,16 +321,6 @@ file { '/home/vagrant/.ackrc':
   group  => 'vagrant'
 }
 
-# 'clisp'
-# Quicklisp
-# .clisprc.lisp
-
-# Java
-# Scala
-# Leiningen/Clojure
-# Maven
-# Checkstyle
-
 class { 'nodejs':
   version => 'v0.10.25'
 }
@@ -511,7 +501,36 @@ rvm_gem {
     require      => Rvm_system_ruby['ruby-2.1.0'];
 }
 
-# Bash 4.0...
+package { 'clisp':
+  ensure => present
+}
+
+file { '/home/vagrant/.clisprc.lisp':
+  ensure => link,
+  target => '/vagrant/.clisprc.lisp'
+}
+
+# Quicklisp...
+
+package { 'openjdk-7-jdk':
+  ensure => present
+}
+
+package { 'maven':
+  ensure => present
+}
+
+package { 'scala':
+  ensure => present
+}
+
+package { ['leiningen', 'clojure1.2']:
+  ensure => present
+}
+
+package { 'checkstyle':
+  ensure => present
+}
 
 # Link bash profile
 
