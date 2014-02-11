@@ -21,5 +21,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     maestrodev/rvm \
     willdurand/nodejs"
 
-  config.vm.provision :puppet
+  config.vm.provision :puppet do |puppet|
+    puppet.options = ENV['PUPPET_OPTIONS']
+  end
 end
