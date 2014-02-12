@@ -141,13 +141,6 @@ package { 'smlnj':
   require => Apt::Ppa['ppa:hrzhu/smlnj-backport']
 }
 
-# apt::ppa { 'ppa:bjourne/factor': }
-
-# package { 'factor':
-#   ensure  => present,
-#   require => Apt::Ppa['ppa:bjourne/factor']
-# }
-
 # gcc, g++, make, etc.
 
 package { 'build-essential':
@@ -314,6 +307,8 @@ package { ['vagrant', 'virtualbox']:
 }
 
 class { 'perl': }
+
+perl::cpan::module { 'Test::More': }
 
 perl::cpan::module { 'WWW::Mechanize': }
 
