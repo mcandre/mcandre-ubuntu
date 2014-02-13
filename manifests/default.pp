@@ -308,13 +308,19 @@ package { ['vagrant', 'virtualbox']:
 
 class { 'perl': }
 
-perl::cpan::module { 'Test::More': }
-
-perl::cpan::module { 'WWW::Mechanize': }
-
 perl::cpan::module { 'App::Ack':
   require => Package['build-essential']
 }
+
+perl::cpan::module { 'Test::More': }
+
+perl::cpan::module { 'Perl::Critic': }
+
+# perl::cpan::module { 'PAR::Packer':
+#   require => Package['build-essential']
+# }
+
+perl::cpan::module { 'WWW::Mechanize': }
 
 # Link to ack profile
 
