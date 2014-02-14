@@ -187,6 +187,16 @@ package { 'cppcheck':
   ensure => present
 }
 
+package { 'valgrind':
+  ensure => present
+}
+
+# Boehmgc
+
+package { 'libgc-dev':
+  ensure => present
+}
+
 package { 'clang':
   ensure => present
 }
