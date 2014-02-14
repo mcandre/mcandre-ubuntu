@@ -23,13 +23,33 @@ package { 'vim':
   ensure => present
 }
 
-# Link vim profile
+# Vim profile
 
-file { '/home/vagrant/.vimrc':
-  ensure => link,
-  target => '/vagrant/.vimrc',
+file { '/home/vagrant/src':
+  ensure => directory,
   owner  => 'vagrant',
   group  => 'vagrant'
+}
+
+# Profiles
+
+vcsrepo { '/home/vagrant/src/dotfiles':
+  ensure   => latest,
+  provider => git,
+  source   => 'https://github.com/mcandre/dotfiles',
+  owner    => 'vagrant',
+  group    => 'vagrant',
+  require  => File['/home/vagrant/src']
+}
+
+# Vim profile
+
+file { '/home/vagrant/.vimrc':
+  ensure  => link,
+  target  => '/home/vagrant/src/dotfiles/.vimrc',
+  owner   => 'vagrant',
+  group   => 'vagrant',
+  require => Vcsrepo['/home/vagrant/src/dotfiles']
 }
 
 file { '/home/vagrant/.vim/':
@@ -56,9 +76,10 @@ exec { 'vundle':
   refreshonly => true,
   require     => [
     Package['vim'],
-    Vcsrepo['/home/vagrant/.vim/bundle/vundle']
+    Vcsrepo['/home/vagrant/.vim/bundle/vundle'],
+    File['/home/vagrant/.vimrc']
   ],
-  subscribe   => File['/home/vagrant/.vimrc']
+  subscribe   => Vcsrepo['/home/vagrant/src/dotfiles']
 }
 
 # Fix Emacs permissions
@@ -77,42 +98,48 @@ vcsrepo { '/home/vagrant/.cask':
   group    => 'vagrant'
 }
 
-# Link Cask profile
+# Cask profile
 
 file { '/home/vagrant/.emacs.d/Cask':
   ensure  => link,
-  target  => '/vagrant/Cask',
+  target  => '/home/vagrant/src/dotfiles/Cask',
   owner   => 'vagrant',
   group   => 'vagrant',
-  require => File['/home/vagrant/.emacs.d/']
+  require => [
+    File['/home/vagrant/.emacs.d/'],
+    Vcsrepo['/home/vagrant/src/dotfiles']
+  ]
 }
 
-# Link Emacs profile
+# Emacs profile
 
 file { '/home/vagrant/.emacs':
-  ensure => link,
-  target => '/vagrant/.emacs',
-  owner  => 'vagrant',
-  group  => 'vagrant',
+  ensure  => link,
+  target  => '/home/vagrant/src/dotfiles/.emacs',
+  owner   => 'vagrant',
+  group   => 'vagrant',
+  require => Vcsrepo['/home/vagrant/src/dotfiles']
 }
 
 # Install Emacs packages
 
 exec { 'cask':
-  command     => 'emacs -q --batch --eval \"(progn \
-    (require \'cask \\\"~/.cask/cask.el\\\") \
-    (cask-initialize) (setq save-abbrevs nil) \
-    (cask-install) \
-    (kill-emacs))\"',
+  command     => "emacs -q --batch --eval \"(progn \
+    (require 'cask \\\"~/.cask/cask.el\\\")
+    (cask-initialize)
+    (setq save-abbrevs nil)
+    (cask-install)
+    (kill-emacs))\"",
   path        => '/bin:/usr/bin',
   user        => 'vagrant',
   environment => 'HOME=/home/vagrant/',
   refreshonly => true,
   require     => [
     Package['emacs24'],
-    Vcsrepo['/home/vagrant/.cask']
+    Vcsrepo['/home/vagrant/.cask'],
+    File['/home/vagrant/.emacs.d/Cask']
   ],
-  subscribe   => File['/home/vagrant/.emacs.d/Cask'],
+  subscribe   => Vcsrepo['/home/vagrant/src/dotfiles']
 }
 
 # Link Nano profile
@@ -322,13 +349,14 @@ perl::cpan::module { 'Perl::Critic': }
 
 perl::cpan::module { 'WWW::Mechanize': }
 
-# Link to ack profile
+# Ack profile
 
 file { '/home/vagrant/.ackrc':
-  ensure => link,
-  target => '/vagrant/.ackrc',
-  owner  => 'vagrant',
-  group  => 'vagrant'
+  ensure  => link,
+  target  => '/home/vagrant/dotfiles/.ackrc',
+  owner   => 'vagrant',
+  group   => 'vagrant',
+  require => Vcsrepo['/home/vagrant/src/dotfiles']
 }
 
 class { 'nodejs':
@@ -519,11 +547,14 @@ package { 'clisp':
   ensure => present
 }
 
+# CLISP profile
+
 file { '/home/vagrant/.clisprc.lisp':
-  ensure => link,
-  target => '/vagrant/.clisprc.lisp',
-  owner  => 'vagrant',
-  group  => 'vagrant'
+  ensure  => link,
+  target  => '/home/vagrant/src/dotfiles/.clisprc.lisp',
+  owner   => 'vagrant',
+  group   => 'vagrant',
+  require => Vcsrepo['/home/vagrant/src/dotfiles']
 }
 
 exec { '/home/vagrant/quicklisp.lisp':
@@ -562,7 +593,8 @@ exec { 'cl-quickcheck':
   user        => 'vagrant',
   environment => 'HOME=/home/vagrant',
   require     => Exec['clisp quicklisp'],
-  onlyif      => '/usr/bin/test ! -d /home/vagrant/quicklisp/dists/quicklisp/software/cl-quickcheck-*-git'
+  onlyif      => '/usr/bin/test ! -d \
+    /home/vagrant/quicklisp/dists/quicklisp/software/cl-quickcheck-*-git'
 }
 
 package { 'openjdk-7-jdk':
