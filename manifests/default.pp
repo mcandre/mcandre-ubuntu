@@ -142,13 +142,14 @@ exec { 'cask':
   subscribe   => Vcsrepo['/home/vagrant/src/dotfiles']
 }
 
-# Link Nano profile
+# Nano profile
 
 file { '/home/vagrant/.nanorc':
-  ensure => link,
-  target => '/vagrant/.nanorc',
-  owner  => 'vagrant',
-  group  => 'vagrant'
+  ensure  => link,
+  target  => '/home/vagrant/src/dotfiles/.nanorc',
+  owner   => 'vagrant',
+  group   => 'vagrant',
+  require => Vcsrepo['/home/vagrant/src/dotfiles']
 }
 
 # Install Nano packages
