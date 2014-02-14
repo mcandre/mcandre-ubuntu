@@ -222,9 +222,9 @@ package { 'haskell-platform':
 
 exec { 'cabal update':
   command     => 'cabal update',
+  environment => 'HOME=/root',
   path        => '/bin:/usr/bin',
-  require     => Package['haskell-platform'],
-  refreshonly => true
+  require     => Package['haskell-platform']
 }
 
 # Fix cabal permissions
