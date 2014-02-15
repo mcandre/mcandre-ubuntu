@@ -23,6 +23,7 @@ apt::ppa { [
 }
 
 package { [
+  'ack-grep',
   'apache2',
   'build-essential',
   'checkstyle',
@@ -35,11 +36,14 @@ package { [
   'emacs24',
   'erlang',
   'gawk',
+  'gdc',
+  'gfortran',
   'ghostscript',
   'git-core',
   'gnu-smalltalk',
   'golang',
   'haskell-platform',
+  'hlint',
   'leiningen',
   'libapache2-mod-php5',
   'libgc-dev',
@@ -51,6 +55,7 @@ package { [
   'maven',
   'mysql-client',
   'mysql-server',
+  'nasm',
   'ocaml',
   'octave',
   'openjdk-7-jdk',
@@ -117,16 +122,6 @@ file { '/root/.cabal/bin':
   recurse => true
 }
 
-exec { 'cabal hlint':
-  command     => 'cabal install hlint',
-  path        => '/bin:/usr/bin',
-  environment => 'HOME=/root',
-  timeout     => 0,
-  require     => Exec['cabal update'],
-  onlyif      => '/usr/bin/test ! -d \
-    /root/.cabal/packages/hackage.haskell.org/hlint',
-}
-
 exec { 'cabal shellcheck':
   command     => 'cabal install shellcheck',
   path        => '/bin:/usr/bin',
@@ -161,7 +156,6 @@ class { 'perl':
 }
 
 perl::cpan::module { [
-  'App::Ack',
   'App::pmuninstall',
   'Test::More',
   'Perl::Critic',
@@ -221,7 +215,8 @@ rvm_gem { [
   'tailor',
   ]:
     ensure       => present,
-    ruby_version => 'ruby-2.1.0';
+    ruby_version => 'ruby-2.1.0',
+    require      => Rvm_system_ruby['ruby-2.1.0'];
 }
 
 file { '/home/vagrant/.clisprc.lisp':
