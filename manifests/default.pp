@@ -344,19 +344,30 @@ package { ['vagrant', 'virtualbox']:
   ensure => present
 }
 
-class { 'perl': }
-
-perl::cpan::module { 'App::Ack':
-  require => Package['build-essential']
+class { 'perl':
+  require => [
+    Package['build-essential'],
+    Package['libperl-dev']
+  ]
 }
+
+package { 'ppm':
+  ensure => present
+}
+
+package { 'libperl-dev':
+  ensure => present
+}
+
+perl::cpan::module { 'App::Ack': }
+
+perl::cpan::module { 'App::pmuninstall': }
 
 perl::cpan::module { 'Test::More': }
 
 perl::cpan::module { 'Perl::Critic': }
 
-# perl::cpan::module { 'PAR::Packer':
-#   require => Package['build-essential']
-# }
+perl::cpan::module { 'PAR::Packer': }
 
 perl::cpan::module { 'WWW::Mechanize': }
 
