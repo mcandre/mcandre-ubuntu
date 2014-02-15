@@ -24,6 +24,7 @@ apt::ppa { [
 
 package { [
   'ack-grep',
+  'ant',
   'apache2',
   'build-essential',
   'checkstyle',
@@ -155,11 +156,11 @@ class { 'perl':
   ]
 }
 
-perl::cpan::module { [
+perl::module { [
   'App::pmuninstall',
   'Test::More',
-  'Perl::Critic',
   'PAR::Packer',
+  'Perl::Critic',
   'WWW::Mechanize',
   'YAML'
   ]:
