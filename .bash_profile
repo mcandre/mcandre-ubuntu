@@ -7,6 +7,9 @@ export PATH="$PATH:~/.cask/bin"
 # Cabal
 export PATH="$PATH:/root/.cabal/bin"
 
+# Perl
+export PATH="$PATH:/root/perl5/bin"
+
 # Node.js
 export PATH="$PATH:/usr/local/node/node-default/bin"
 
