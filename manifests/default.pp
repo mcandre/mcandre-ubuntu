@@ -58,7 +58,7 @@ package { [
   'mysql-server',
   'nasm',
   'ocaml',
-  'octave',
+  'octave3.2',
   'openjdk-7-jdk',
   'php5',
   'r-base',
