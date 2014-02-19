@@ -174,6 +174,7 @@ package { [
   'coffee-script',
   'coffeelint',
   'csslint',
+  'grunt-cli',
   'jshint',
   'less',
   'mocha',
