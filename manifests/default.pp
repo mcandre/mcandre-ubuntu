@@ -1,5 +1,5 @@
 #
-# Update apt before installing any packages
+# Keep apt db uncorrupt: No timeout.
 #
 
 class { 'apt': update_timeout => 60 }
@@ -10,7 +10,11 @@ exec { 'apt-update':
   timeout => 0
 }
 
-Exec['apt-update'] -> Package <| |>
+#
+# Register PPAs before installing packages
+#
+
+Apt::Ppa <||> -> Exec['apt-update']
 
 #
 # Developer tools
@@ -80,11 +84,7 @@ package { [
   'yasm',
   'zsh'
   ]:
-  ensure  => present,
-  require => [
-    Apt::Ppa['ppa:cassou/emacs'],
-    Apt::Ppa['ppa:hrzhu/smlnj-backport']
-  ]
+  ensure  => present
 }
 
 class { 'mongodb': }
