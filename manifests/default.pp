@@ -60,6 +60,7 @@ package { [
   'ocaml',
   'octave3.2',
   'openjdk-7-jdk',
+  'perl-doc',
   'php5',
   'r-base',
   'redis-server',
