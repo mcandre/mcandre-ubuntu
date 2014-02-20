@@ -50,6 +50,7 @@ package { [
   'graphviz',
   'haskell-platform',
   'hlint',
+  'imagemagick',
   'leiningen',
   'libapache2-mod-php5',
   'libgc-dev',
