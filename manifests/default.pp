@@ -47,6 +47,7 @@ package { [
   'git-core',
   'gnu-smalltalk',
   'golang',
+  'graphviz',
   'haskell-platform',
   'hlint',
   'leiningen',
@@ -124,6 +125,16 @@ file { '/root/.cabal/bin':
   recurse => true
 }
 
+exec { 'cabal graphviz':
+  command     => 'cabal install graphviz',
+  path        => '/bin:/usr/bin',
+  environment => 'HOME=/root',
+  timeout     => 0,
+  require     => Exec['cabal update'],
+  onlyif      => '/usr/bin/test ! -d \
+    /root/.cabal/packages/hackage.haskell.org/graphviz'
+}
+
 exec { 'cabal shellcheck':
   command     => 'cabal install shellcheck',
   path        => '/bin:/usr/bin',
@@ -131,7 +142,7 @@ exec { 'cabal shellcheck':
   timeout     => 0,
   require     => Exec['cabal update'],
   onlyif      => '/usr/bin/test ! -d \
-    /root/.cabal/packages/hackage.haskell.org/ShellCheck',
+    /root/.cabal/packages/hackage.haskell.org/ShellCheck'
 }
 
 class { 'python':
