@@ -16,7 +16,8 @@ exec { 'apt-update':
 
 apt::ppa { [
   'ppa:cassou/emacs',
-  'ppa:hrzhu/smlnj-backport'
+  'ppa:hrzhu/smlnj-backport',
+  'ppa:wnoronha/thrift'
   ]:
   before => Exec['apt-update']
 }
@@ -72,6 +73,7 @@ package { [
   'strace',
   'tcl',
   'texlive',
+  'thrift-compiler',
   'tidy',
   'tree',
   'vagrant',
