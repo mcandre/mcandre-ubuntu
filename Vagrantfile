@@ -7,15 +7,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision :shell, path: 'upgrade-puppet.sh'
 
   # Install puppet modules
-  config.vm.provision :shell, path: 'bootstrap.rb', args: "puppetlabs-stdlib \
-    puppetlabs/apt \
-    puppetlabs/vcsrepo \
-    example42/puppi \
-    example42/perl \
-    example42/mongodb \
-    stankevich/python \
-    maestrodev/rvm \
-    willdurand/nodejs"
+  config.vm.provision :shell, path: 'bootstrap.rb', args: %w(
+    puppetlabs-stdlib
+    puppetlabs/apt
+    puppetlabs/vcsrepo
+    example42/puppi
+    example42/perl
+    example42/mongodb
+    stankevich/python
+    maestrodev/rvm
+    willdurand/nodejs
+  )
 
   config.vm.provision :puppet do |puppet|
     puppet.options = ENV['PUPPET_OPTIONS']
