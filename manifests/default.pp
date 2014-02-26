@@ -11,12 +11,6 @@ exec { 'apt-update':
 }
 
 #
-# Register PPAs before installing packages
-#
-
-Apt::Ppa <||> -> Exec['apt-update']
-
-#
 # Developer tools
 #
 
@@ -24,6 +18,7 @@ apt::ppa { [
   'ppa:cassou/emacs',
   'ppa:hrzhu/smlnj-backport'
   ]:
+  before => Exec['apt-update']
 }
 
 package { [
@@ -86,7 +81,8 @@ package { [
   'yasm',
   'zsh'
   ]:
-  ensure  => present
+  ensure  => present,
+  require => Exec['apt-update']
 }
 
 class { 'mongodb': }
