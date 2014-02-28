@@ -17,7 +17,8 @@ exec { 'apt-update':
 apt::ppa { [
   'ppa:cassou/emacs',
   'ppa:hrzhu/smlnj-backport',
-  'ppa:wnoronha/thrift'
+  'ppa:wnoronha/thrift',
+  'ppa:bjourne/factor'
   ]:
   before => Exec['apt-update']
 }
@@ -36,6 +37,7 @@ package { [
   'curl',
   'emacs24',
   'erlang',
+  'factor',
   'gawk',
   'gdc',
   'gfortran',
