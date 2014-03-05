@@ -69,6 +69,7 @@ package { [
   'r-base',
   'redis-server',
   'scala',
+  'sloccount',
   'smlnj',
   'splint',
   'sqlite3',
