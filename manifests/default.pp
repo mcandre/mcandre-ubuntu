@@ -27,6 +27,7 @@ package { [
   'ack-grep',
   'ant',
   'apache2',
+  'aspell',
   'build-essential',
   'checkstyle',
   'chicken-bin',
@@ -69,6 +70,7 @@ package { [
   'r-base',
   'redis-server',
   'scala',
+  'sed',
   'sloccount',
   'smlnj',
   'splint',
@@ -211,6 +213,7 @@ rvm_system_ruby {
 }
 
 rvm_gem { [
+  'aspelllint',
   'bundler',
   'cane',
   'churn',
@@ -232,7 +235,11 @@ rvm_gem { [
   ]:
     ensure       => present,
     ruby_version => 'ruby-2.1.0',
-    require      => Rvm_system_ruby['ruby-2.1.0'];
+    require      => [
+      Rvm_system_ruby['ruby-2.1.0'],
+      Package['aspell'],
+      Package['sed']
+    ];
 }
 
 file { '/home/vagrant/.clisprc.lisp':
