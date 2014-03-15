@@ -5,7 +5,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box_url = 'http://files.vagrantup.com/precise64.box'
 
   config.vm.provider "virtualbox" do |v|
-    v.memory = 2048 # GB
+    v.memory = 2048 # MB
   end
 
   config.vm.provision :shell, path: 'upgrade-puppet.sh'
