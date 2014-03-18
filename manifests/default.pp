@@ -155,12 +155,26 @@ class { 'python':
   pip        => true
 }
 
-python::pip { [
-  'invoke',
-  'pep8',
-  'pyflakes',
-  'pylint'
-  ]:
+python::pip { 'invoke':
+  pkgname => 'invoke',
+  ensure => present,
+  owner  => 'root'
+}
+
+python::pip { 'pep8':
+  pkgname => 'pep8',
+  ensure => present,
+  owner  => 'root'
+}
+
+python::pip { 'pyflakes':
+  pkgname => 'pyflakes',
+  ensure => present,
+  owner  => 'root'
+}
+
+python::pip { 'pylint':
+  pkgname => 'pylint',
   ensure => present,
   owner  => 'root'
 }
