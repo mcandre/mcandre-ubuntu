@@ -33,7 +33,6 @@ package { [
   'chicken-bin',
   'clang',
   'clisp',
-  'clojure1.2',
   'cppcheck',
   'curl',
   'emacs24',
