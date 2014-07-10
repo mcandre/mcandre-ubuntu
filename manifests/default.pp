@@ -394,16 +394,12 @@ file { '/home/vagrant/.emacs':
 }
 
 exec { 'cask':
-  command     => "emacs -q --batch --eval \"(progn \
-    (require 'cask \\\"~/.cask/cask.el\\\")
-    (cask-initialize)
-    (setq save-abbrevs nil)
-    (cask-install)
-    (kill-emacs))\"",
-  path        => '/bin:/usr/bin',
+  command     => 'cask update && cask install',
+  cwd         => '/home/vagrant/.emacs.d/',
+  path        => '/bin:/usr/bin:/home/vagrant/.cask/bin',
   user        => 'vagrant',
   environment => 'HOME=/home/vagrant/',
-  refreshonly => true,
+  # refreshonly => true,
   require     => [
     Package['emacs24'],
     Vcsrepo['/home/vagrant/.cask'],
