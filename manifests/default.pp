@@ -399,7 +399,7 @@ exec { 'cask':
   path        => '/bin:/usr/bin:/home/vagrant/.cask/bin',
   user        => 'vagrant',
   environment => 'HOME=/home/vagrant/',
-  # refreshonly => true,
+  refreshonly => true,
   require     => [
     Package['emacs24'],
     Vcsrepo['/home/vagrant/.cask'],
