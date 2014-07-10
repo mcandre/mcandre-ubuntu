@@ -197,7 +197,7 @@ perl::module { [
 }
 
 class { 'nodejs':
-  version => 'v0.10.25'
+  version => 'stable'
 }
 
 package { [
@@ -211,7 +211,8 @@ package { [
   'sass',
   'stylus',
   ]:
-  provider => npm
+  provider => 'npm',
+  require => Class['nodejs']
 }
 
 class { 'rvm':
