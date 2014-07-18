@@ -54,6 +54,7 @@ package { [
   'imagemagick',
   'leiningen',
   'libapache2-mod-php5',
+  'libecpg-dev',
   'libgc-dev',
   'libperl-dev',
   'libsqlite3-dev',
@@ -179,6 +180,13 @@ python::pip { 'pylint':
   pkgname => 'pylint',
   ensure => present,
   owner  => 'root'
+}
+
+python::pip { 'pgsanity':
+  pkgname => 'pgsanity',
+  ensure => present,
+  owner => 'root',
+  require => Package['libecpg-dev']
 }
 
 class { 'perl':
