@@ -159,33 +159,33 @@ class { 'python':
 }
 
 python::pip { 'invoke':
+  ensure  => present,
   pkgname => 'invoke',
-  ensure => present,
-  owner  => 'root'
+  owner   => 'root'
 }
 
 python::pip { 'pep8':
+  ensure  => present,
   pkgname => 'pep8',
-  ensure => present,
-  owner  => 'root'
+  owner   => 'root'
 }
 
 python::pip { 'pyflakes':
+  ensure  => present,
   pkgname => 'pyflakes',
-  ensure => present,
-  owner  => 'root'
+  owner   => 'root'
 }
 
 python::pip { 'pylint':
+  ensure  => present,
   pkgname => 'pylint',
-  ensure => present,
-  owner  => 'root'
+  owner   => 'root'
 }
 
 python::pip { 'pgsanity':
+  ensure  => present,
   pkgname => 'pgsanity',
-  ensure => present,
-  owner => 'root',
+  owner   => 'root',
   require => Package['libecpg-dev']
 }
 
@@ -222,7 +222,7 @@ package { [
   'stylus',
   ]:
   provider => 'npm',
-  require => Class['nodejs']
+  require  => Class['nodejs']
 }
 
 class { 'rvm':
