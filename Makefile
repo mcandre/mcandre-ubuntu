@@ -1,6 +1,6 @@
 all: lint
 
 puppet-lint:
-	puppet-lint **/*.pp
+	find . -type f -name '*.pp' -exec puppet-lint {} \;
 
 lint: puppet-lint
