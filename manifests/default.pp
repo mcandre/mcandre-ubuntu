@@ -211,6 +211,7 @@ class { 'nodejs':
 }
 
 package { [
+  'bower',
   'coffee-script',
   'coffeelint',
   'csslint',
