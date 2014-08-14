@@ -349,10 +349,10 @@ file { '/home/vagrant/.vim/':
   group  => 'vagrant',
 }
 
-vcsrepo { '/home/vagrant/.vim/bundle/vundle':
-  ensure   => present,
+vcsrepo { '/home/vagrant/.vim/bundle/Vundle.vim':
+  ensure   => latest,
   provider => git,
-  source   => 'https://github.com/gmarik/vundle',
+  source   => 'https://github.com/gmarik/Vundle.vim',
   owner    => 'vagrant',
   group    => 'vagrant'
 }
