@@ -72,6 +72,8 @@ package { [
   'php5',
   'r-base',
   'redis-server',
+  'ruby1.9.1-dev',
+  'ruby2.0-dev',
   'scala',
   'sed',
   'sloccount',
@@ -264,7 +266,9 @@ rvm_gem { [
     require      => [
       Rvm_system_ruby['ruby-2.1.0'],
       Package['aspell'],
-      Package['sed']
+      Package['sed'],
+      Package['ruby1.9.1-dev'],
+      Package['ruby2.0-dev']
     ];
 }
 
