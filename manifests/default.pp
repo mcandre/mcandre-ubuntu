@@ -18,7 +18,8 @@ apt::ppa { [
   'ppa:cassou/emacs',
   'ppa:hrzhu/smlnj-backport',
   'ppa:wnoronha/thrift',
-  'ppa:bjourne/factor'
+  'ppa:bjourne/factor',
+  'ppa:hansjorg/rust'
   ]:
   before => Exec['apt-update']
 }
@@ -74,6 +75,7 @@ package { [
   'redis-server',
   'ruby1.9.1-dev',
   'ruby2.0-dev',
+  'rust-0.11',
   'scala',
   'sed',
   'sloccount',
