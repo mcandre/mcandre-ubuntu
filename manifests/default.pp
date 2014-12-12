@@ -77,6 +77,7 @@ package { [
   'ruby2.0-dev',
   'rust-0.11',
   'scala',
+  'screen',
   'sed',
   'sloccount',
   'smlnj',
