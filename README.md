@@ -9,10 +9,12 @@ Includes lots of programming languages, and text editors configured just so.
 
 # EXAMPLE
 
-    $ git clone https://github.com/mcandre/mcandre-ubuntu.git
-    $ cd mcandre-ubuntu
+```
+$ git clone https://github.com/mcandre/mcandre-ubuntu.git
+$ cd mcandre-ubuntu
 
-    mcandre-ubuntu$ vagrant up
-    mcandre-ubuntu$ vagrant ssh
+mcandre-ubuntu$ vagrant up
+mcandre-ubuntu$ vagrant ssh
 
-    vagrant@precise64$
+vagrant@precise64$
+```
